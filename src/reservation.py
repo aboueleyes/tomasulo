@@ -1,33 +1,10 @@
-from typing import Union
 
 from enum import Enum
-from abc import ABC, abstractmethod
+from typing import Type
 
+from .components import HasDependencies, RegisterFile
 
-class HasDependencies(ABC):
-    @abstractmethod
-    def get_dependencies(self, tag: str) -> list[object]:
-        raise NotImplementedError
-
-
-class RegisterFile(HasDependencies):
-    def __new__(cls):
-        if not hasattr(cls, 'instance'):
-            cls.instance = super(RegisterFile, cls).__new__(cls)
-        return cls.instance
-
-    def __init__(self):
-        self.register_map: dict[str, Union[str, float]] = {
-            f'F{i}': 0.0 for i in range(32)}
-
-    def get_register_value(self, register: str) -> Union[str, float]:
-        return self.register_map[register]
-
-    def set_register_value(self, register: str, value: Union[str, float]) -> None:
-        self.register_map[register] = value
-
-    def get_dependencies(self, tag: str) -> list[str]:
-        return [register for register, value in self.register_map.items() if value == tag]
+from .instruction import TwoOperandInstruction
 
 
 class ReservationEntryState(Enum):
@@ -37,7 +14,7 @@ class ReservationEntryState(Enum):
 
 
 class ReservationEntry():
-    def __init__(self, tag: str) -> None:
+    def __init__(self, tag: str):
         self.busy = False
         self.op = None
         self.vj = None
@@ -48,6 +25,27 @@ class ReservationEntry():
         self.state = ReservationEntryState.ISSUED
         self.output: float | None = None
         self.tag = tag
+        self.register_file: RegisterFile = RegisterFile.get_instance()  # type: ignore
+        self.instruction: TwoOperandInstruction | None = None
+        self.locked: bool = False
+
+    def set_instruction(self, instruction: TwoOperandInstruction) -> None:
+        self.instruction = instruction
+        self.op = instruction.operation
+        if (type(self.register_file.get_register_value(instruction.first_operand)) == float):
+            self.vj = float(
+                self.register_file.get_register_value(instruction.first_operand))
+        else:
+            self.qj = self.register_file.get_register_value(
+                instruction.first_operand)
+        if (type(self.register_file.get_register_value(instruction.second_operand)) == float):
+            self.vk = float(
+                self.register_file.get_register_value(instruction.second_operand))
+        else:
+            self.qk = self.register_file.get_register_value(
+                instruction.second_operand)
+
+        self.time = instruction.latency
 
     def set_busy(self, busy: bool) -> None:
         self.busy = busy
@@ -57,26 +55,8 @@ class ReservationEntry():
 
     __repr__ = __str__
 
-    def set_op(self, op: str) -> None:
-        self.op = op
-
-    def set_vj(self, vj: float | None) -> None:
-        self.vj = vj
-
-    def set_vk(self, vk: float | None) -> None:
-        self.vk = vk
-
-    def set_qj(self, qj: str | None) -> None:
-        self.qj = qj
-
-    def set_qk(self, qk: str | None) -> None:
-        self.qk = qk
-
     def decrease_time(self) -> None:
         self.time -= 1
-
-    def set_time(self, time: int) -> None:
-        self.time = time
 
     def set_state(self, state: ReservationEntryState) -> None:
         self.state = state
@@ -84,20 +64,19 @@ class ReservationEntry():
     def adjust_state(self) -> None:
         if self.time == 0:
             self.set_state(ReservationEntryState.WRITING_BACK)
+            self.locked = True
 
     def execute(self) -> None:
         if self.output is None:
-            if self.vj is None or self.vk is None or self.op is None:
+            if self.vj is None or self.vk is None or self.op is None or self.instruction is None:
                 raise Exception('Invalid operation')
 
-            self.output = self._calculate(self.op, self.vj, self.vk)
-
+            self.output = self.instruction.calculate(self.vj, self.vk)
         match self.state:
             case ReservationEntryState.ISSUED:
                 self.set_state(ReservationEntryState.EXECUTING)
-                self.set_time(2)  # FIXME: hardcoded
-                ExecutingInstructionQueue().add_entry(self)
-                print(self)
+                self.locked = True
+                ExecutingInstructionQueue.get_instance().add_entry(self)  # type: ignore
                 self.decrease_time()
 
             case ReservationEntryState.EXECUTING:
@@ -108,40 +87,28 @@ class ReservationEntry():
         if self.output is None:
             raise Exception('Output not calculated')
 
-        reservation_areas = ReservationAreas().get_reservation_areas()
+        reservation_areas = ReservationAreas.get_instance(
+        ).get_reservation_areas()  # type: ignore
         entry_dependencies: list[ReservationEntry] = []
         for _, reservation_area in reservation_areas.items():
             entry_dependencies.extend(
                 reservation_area.get_dependencies(self.tag))
 
-        register_dependencies = RegisterFile().get_dependencies(self.tag)
+        register_dependencies = RegisterFile.get_instance(
+        ).get_dependencies(self.tag)  # type: ignore
         for entry in entry_dependencies:
             if entry.qj == self.tag:
-                entry.set_vj(self.output)
-                entry.set_qj(None)
+                entry.vj = self.output
+                entry.qj = None
             if entry.qk == self.tag:
-                entry.set_vk(self.output)
-                entry.set_qk(None)
+                entry.vk = self.output
+                entry.qk = None
 
         for register in register_dependencies:
-            RegisterFile().register_map[register] = self.output
+            RegisterFile.get_instance(
+            ).register_map[register] = self.output  # type: ignore
 
-    @ staticmethod
-    def _calculate(operation: str, *args: float) -> float:
-        match operation:
-            case 'ADD.D':
-                return args[0] + args[1]
-            case 'SUB.D':
-                return args[0] - args[1]
-            case 'MUL.D':
-                return args[0] * args[1]
-            case 'DIV.D':
-                try:
-                    return args[0] / args[1]
-                except ZeroDivisionError:
-                    return -1.0
-
-        raise Exception('Invalid operation')
+        self.set_busy(False)
 
 
 class ReservationArea(HasDependencies):
@@ -189,14 +156,24 @@ class ReservationArea(HasDependencies):
     def get_dependencies(self, entry_tag: str) -> list[ReservationEntry]:
         return [value for _, value in self.reservation_area.items() if value.qj == entry_tag or value.qk == entry_tag]
 
+    def is_empty(self) -> bool:
+        return all(not value.busy for _, value in self.reservation_area.items())
+
 
 class ReservationAreas():
-    def __new__(cls):
-        if not hasattr(cls, 'instance'):
-            cls.instance = super(ReservationAreas, cls).__new__(cls)
-        return cls.instance
+    __shared_instance = None
+
+    @staticmethod
+    def get_instance():
+        if ReservationAreas.__shared_instance is None:
+            ReservationAreas()
+        return ReservationAreas.__shared_instance
 
     def __init__(self) -> None:
+        if ReservationAreas.__shared_instance is not None:
+            raise Exception("This class is a singleton class !")
+
+        ReservationAreas.__shared_instance = self
         self.reservation_areas: dict[str, ReservationArea] = {
             'A': ReservationArea(3, 'A'),
             'M': ReservationArea(2, 'M'),
@@ -207,18 +184,32 @@ class ReservationAreas():
 
 
 class ExecutingInstructionQueue():
-    def __new__(cls):
-        if not hasattr(cls, 'instance'):
-            cls.instance = super(ExecutingInstructionQueue, cls).__new__(cls)
-        return cls.instance
+    __shared_instance = None
 
     def __init__(self) -> None:
+        if ExecutingInstructionQueue.__shared_instance is not None:
+            raise Exception("This class is a singleton class !")
+
+        ExecutingInstructionQueue.__shared_instance = self
         self.executing_instruction_queue: list[ReservationEntry] = []
+
+    @staticmethod
+    def get_instance():
+        """Static Access Method"""
+        if ExecutingInstructionQueue.__shared_instance is None:
+            ExecutingInstructionQueue()
+        return ExecutingInstructionQueue.__shared_instance
 
     def add_entry(self, entry: ReservationEntry) -> None:
         self.executing_instruction_queue.append(entry)
 
     def get_next_writing_back_entry(self) -> ReservationEntry | None:
         writing_back_entries = list(
-            filter(lambda entry: entry.state == ReservationEntryState.WRITING_BACK, self.executing_instruction_queue))
-        return writing_back_entries.pop() if writing_back_entries else None
+            filter(lambda entry: entry.state == ReservationEntryState.WRITING_BACK and not entry.locked, self.executing_instruction_queue))
+        if not writing_back_entries:
+            return None
+        print(f'Writing back {writing_back_entries[-1]}')
+        self.executing_instruction_queue.remove(writing_back_entries[-1])
+        print(
+            f'Executing instruction queue {self.executing_instruction_queue}')
+        return writing_back_entries.pop()

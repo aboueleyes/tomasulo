@@ -1,0 +1,9 @@
+commonmark==0.9.1
+distlib==0.3.6
+filelock==3.8.2
+platformdirs==2.6.0
+Pygments==2.13.0
+PyYAML==6.0
+rich==12.6.0
+virtualenv==20.17.1
+yml==0.0.1
