@@ -1,5 +1,6 @@
 from enum import Enum
 from typing import Type
+from itertools import chain
 
 from .components import HasDependencies, RegisterFile
 
@@ -66,6 +67,14 @@ class ReservationEntry:
     def set_state(self, state: EntryState) -> None:
         self.state = state
 
+    def update(self, tag: str, output: float) -> None:
+        if self.qj == tag:
+            self.vj = output
+            self.qj = None
+        if self.qk == tag:
+            self.vk = output
+            self.qk = None
+
     def adjust_state(self) -> None:
         if self.time == 0:
             self.set_state(EntryState.WRITING_BACK)
@@ -88,33 +97,37 @@ class ReservationEntry:
                 self.locked = True
                 ExecutingInstructionQueue.get_instance().add_entry(self)  # type: ignore
                 self.decrease_time()
+                self.adjust_state()
 
             case EntryState.EXECUTING:
                 self.decrease_time()
                 self.adjust_state()
 
     def write_back(self) -> None:
+        from .buffer import BufferAreas
+
         if self.output is None:
             raise Exception("Output not calculated")
 
         reservation_areas = (
             ReservationAreas.get_instance().get_reservation_areas()
         )  # type: ignore
-        entry_dependencies: list[ReservationEntry] = []
-        # TODO: Update Also Buffers
-        for _, reservation_area in reservation_areas.items():
+
+        buffer_areas = BufferAreas.get_instance().get_buffer_areas()  # type: ignore
+
+        entry_dependencies: list[object] = []
+
+        for reservation_area in chain(
+            reservation_areas.values(), buffer_areas.values()
+        ):
             entry_dependencies.extend(reservation_area.get_dependencies(self.tag))
+
+        for entry in entry_dependencies:
+            entry.update(self.tag, self.output)
 
         register_dependencies = RegisterFile.get_instance().get_dependencies(
             self.tag
         )  # type: ignore
-        for entry in entry_dependencies:
-            if entry.qj == self.tag:
-                entry.vj = self.output
-                entry.qj = None
-            if entry.qk == self.tag:
-                entry.vk = self.output
-                entry.qk = None
 
         for register in register_dependencies:
             RegisterFile.get_instance().register_map[
@@ -122,6 +135,20 @@ class ReservationEntry:
             ] = self.output  # type: ignore
 
         self.set_busy(False)
+
+    def to_json(self) -> dict[str, object]:
+        return {
+            "busy": self.busy,
+            "op": self.op,
+            "vj": self.vj,
+            "vk": self.vk,
+            "qj": self.qj,
+            "qk": self.qk,
+            "time": self.time,
+            "state": self.state.value,
+            "output": self.output,
+            "tag": self.tag,
+        }
 
 
 class ReservationArea(HasDependencies):
@@ -186,6 +213,9 @@ class ReservationArea(HasDependencies):
     def is_empty(self) -> bool:
         return all(not value.busy for _, value in self.reservation_area.items())
 
+    def to_json(self) -> dict[str, dict[str, str]]:
+        return {key: value.to_json() for key, value in self.reservation_area.items()}
+
 
 class ReservationAreas:
     __shared_instance = None
@@ -209,6 +239,9 @@ class ReservationAreas:
     def get_reservation_areas(self) -> dict[str, ReservationArea]:
         return self.reservation_areas
 
+    def to_json(self) -> dict[str, dict[str, dict[str, str]]]:
+        return {key: value.to_json() for key, value in self.reservation_areas.items()}
+
 
 class ExecutingInstructionQueue:
     __shared_instance = None
@@ -218,7 +251,7 @@ class ExecutingInstructionQueue:
             raise Exception("This class is a singleton class !")
 
         ExecutingInstructionQueue.__shared_instance = self
-        self.executing_instruction_queue: list[ReservationEntry] = []
+        self.executing_instruction_queue: list[object] = []
 
     @staticmethod
     def get_instance():
@@ -230,7 +263,7 @@ class ExecutingInstructionQueue:
     def add_entry(self, entry: ReservationEntry) -> None:
         self.executing_instruction_queue.append(entry)
 
-    def get_next_writing_back_entry(self) -> ReservationEntry | None:
+    def get_next_writing_back_entry(self) -> object | None:
         writing_back_entries = list(
             filter(
                 lambda entry: entry.state == EntryState.WRITING_BACK

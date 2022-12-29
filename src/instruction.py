@@ -158,9 +158,6 @@ class StoreInstruction(OneOperandInstruction):
     def calculate(self) -> float:
         from .components import RegisterFile, Memory
 
-        Memory.get_instance().set_memory_value(
-            self.address, RegisterFile.get_instance().get_register_value(self.des)
-        )
         return 0.0
 
     def get_buffer(self) -> str:

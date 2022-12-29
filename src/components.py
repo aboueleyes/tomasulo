@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Union
+import json
 
 
 class HasDependencies(ABC):
@@ -61,6 +62,15 @@ class RegisterFile(HasDependencies):
             register for register, value in self.register_map.items() if value == tag
         ]
 
+    def __str__(self) -> str:
+        # print table
+        return "\n".join(
+            [f"{register} {value}" for register, value in self.register_map.items()]
+        )
+
+    def to_json(self) -> dict[str, Union[str, float]]:
+        return json.loads(json.dumps(self.register_map))
+
 
 class Memory:
     __shared_instance = None
@@ -83,3 +93,6 @@ class Memory:
 
     def set_memory_value(self, address: int, value: Union[str, float]) -> None:
         self.memory_map[address] = value
+
+    def to_json(self) -> dict[int, Union[str, float]]:
+        return json.loads(json.dumps(self.memory_map))

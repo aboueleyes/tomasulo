@@ -1,25 +1,28 @@
-from components import HasDependencies
-from instruction import OneOperandInstruction
-from reservation import EntryState, ExecutingInstructionQueue
+from itertools import chain
+from .components import HasDependencies
+from .instruction import OneOperandInstruction
+from .reservation import EntryState, ExecutingInstructionQueue
 
 
 class BufferEntry:
     def __init__(self, tag: str) -> None:
+        from .components import RegisterFile
+
         self.busy = False
         self.address = None
         self.v = None
         self.q = None
         self.output = None
-        self.state = EntryState.EXECUTING
+        self.state = EntryState.ISSUED
         self.instruction: OneOperandInstruction = None
         self.time: int = -1
         self.locked: bool = False
         self.tag: str = tag
-        self.register_file: RegisterFile = RegisterFile.get_instance()  # type: ignore
+        self.register_file = RegisterFile.get_instance()  # type: ignore
 
     def set_instruction(self, instruction: OneOperandInstruction) -> None:
         self.instruction = instruction
-        self.address = instruction.des
+        self.address = instruction.address
         self.time = instruction.latency
 
         if instruction.operation == "S.D":
@@ -32,7 +35,7 @@ class BufferEntry:
         self.busy = busy
 
     def __str__(self) -> str:
-        return f"Busy: {self.busy}, Address: {self.address}, V: {self.v}, Q: {self.q}, Time: {self.time}, State: {self.state}, Output: {self.output}, Tag: {self.tag}"
+        return f"Busy: {self.busy}, Address: {self.address}, V: {self.v}, Q: {self.q}, Time: {self.time}, State: {self.state}, Output: {self.output}, Tag: {self.tag} is locked: {self.locked}"
 
     __repr__ = __str__
 
@@ -41,6 +44,11 @@ class BufferEntry:
 
     def set_state(self, state: EntryState) -> None:
         self.state = state
+
+    def update(self, tag: str, output: float) -> None:
+        if self.q == tag:
+            self.v = output
+            self.q = None
 
     def adjust_state(self) -> None:
         if self.time == 0:
@@ -57,16 +65,61 @@ class BufferEntry:
                 self.locked = True
                 ExecutingInstructionQueue.get_instance().add_entry(self)  # type: ignore
                 self.decrease_time()
+                self.adjust_state()
 
             case EntryState.EXECUTING:
                 self.decrease_time()
                 self.adjust_state()
 
     def write_back(self) -> None:
+        from .reservation import ReservationAreas
+        from .components import RegisterFile, Memory
+
         if self.output is None:
             raise Exception("Output is None")
 
-        # TODO: Check if the address is in the register file
+        if self.instruction.operation == "S.D":
+            Memory.get_instance().set_memory_value(self.address, self.v)
+        reservation_areas = (
+            ReservationAreas.get_instance().get_reservation_areas()
+        )  # type: ignore
+
+        buffer_areas = BufferAreas.get_instance().get_buffer_areas()  # type: ignore
+
+        entry_dependencies: list[object] = []
+
+        for reservation_area in chain(
+            reservation_areas.values(), buffer_areas.values()
+        ):
+            entry_dependencies.extend(reservation_area.get_dependencies(self.tag))
+
+        for entry in entry_dependencies:
+            entry.update(self.tag, self.output)
+
+        register_dependencies = RegisterFile.get_instance().get_dependencies(
+            self.tag
+        )  # type: ignore
+
+        for register in register_dependencies:
+            RegisterFile.get_instance().register_map[
+                register
+            ] = self.output  # type: ignore
+
+        self.set_busy(False)
+
+    def to_json(self) -> dict[str, object]:
+        return {
+            "busy": self.busy,
+            "address": self.address,
+            "v": self.v,
+            "q": self.q,
+            "output": self.output,
+            "state": self.state.value,
+            "time": self.time,
+            "locked": self.locked,
+            "tag": self.tag,
+            "op": self.instruction.operation if self.instruction else None,
+        }
 
 
 class BufferArea(HasDependencies):
@@ -136,9 +189,17 @@ class BufferArea(HasDependencies):
     def is_empty(self) -> bool:
         return not any(value.busy for value in self.buffer_entries.values())
 
+    def to_json(self) -> dict[str, object]:
+        return {
+            "tag": self.tag,
+            "buffer_entries": {
+                key: value.to_json() for key, value in self.buffer_entries.items()
+            },
+        }
+
 
 class BufferAreas:
-    __shared_instance: None
+    __shared_instance = None
 
     @staticmethod
     def get_instance() -> None:
@@ -162,5 +223,8 @@ class BufferAreas:
 
     __repr__ = __str__
 
-    def get_buffer_area(self) -> dict[str, BufferArea]:
+    def get_buffer_areas(self) -> dict[str, BufferArea]:
         return self.buffer_areas
+
+    def to_json(self) -> dict[str, object]:
+        return ({key: value.to_json() for key, value in self.buffer_areas.items()},)
