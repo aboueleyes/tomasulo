@@ -1,17 +1,20 @@
 from .reservation import ReservationArea, ReservationAreas, ExecutingInstructionQueue
-from .instruction import Instruction, TwoOperandInstruction
+from .instruction import Instruction, OneOperandInstruction, TwoOperandInstruction
 from .components import InstructionsQueue, RegisterFile
 
 
-class Tomasulo():
+class Tomasulo:
     def __init__(self, instructions: list[Instruction]):
         self.register_file: RegisterFile = RegisterFile.get_instance()  # type: ignore
         self.instructions_queue = InstructionsQueue(instructions)
-        self.reservation_areas = ReservationAreas.get_instance(
-        ).get_reservation_areas()  # type: ignore
+        self.reservation_areas = (
+            ReservationAreas.get_instance().get_reservation_areas()
+        )  # type: ignore
         self.executing_instructions_queue: ExecutingInstructionQueue = ExecutingInstructionQueue.get_instance()  # type: ignore
 
-    def _map_instruction_to_reservation_area(self, instruction: Instruction) -> ReservationArea:
+    def _map_instruction_to_reservation_area(
+        self, instruction: Instruction
+    ) -> ReservationArea:
         return self.reservation_areas[instruction.get_reservation_area()]
 
     def issue_instruction(self) -> None:
@@ -20,18 +23,21 @@ class Tomasulo():
         if not next_instruction:
             return
 
-        reservation_area = self._map_instruction_to_reservation_area(
-            next_instruction)
+        if issubclass(type(next_instruction), OneOperandInstruction):
+            buffer_area = self._map_instruction_to_buffer_area(next_instruction)
+        else:
+            reservation_area = self._map_instruction_to_reservation_area(
+                next_instruction
+            )
 
-        if not reservation_area:
-            raise Exception('Invalid instruction')
+            if not reservation_area:
+                raise Exception("Invalid instruction")
 
-        if not reservation_area.has_free_entry():
-            self.instructions_queue.current_instruction_index -= 1
-            return
+            if not reservation_area.has_free_entry():
+                self.instructions_queue.current_instruction_index -= 1
+                return
 
-        entry = reservation_area.get_next_free_entry()
-        if issubclass(type(next_instruction), TwoOperandInstruction):
+            entry = reservation_area.get_next_free_entry()
             # type ignore is needed because mypy doesn't know that issubclass() is true
             entry.set_instruction(next_instruction)  # type: ignore
             added_tag = reservation_area.add_entry(entry)
@@ -39,10 +45,8 @@ class Tomasulo():
             entry.locked = True
 
             self.register_file.set_register_value(
-                next_instruction.des, added_tag)  # type: ignore
-        else:
-            # TODO: handle other types of instructions
-            exit(1)
+                next_instruction.des, added_tag
+            )  # type: ignore
 
     def execute(self) -> None:
         for reservation_area in self.reservation_areas.values():
@@ -66,7 +70,9 @@ class Tomasulo():
                     print(k, entry)
         print("=====================================")
         return not self.instructions_queue.is_empty() or any(
-            not reservation_area.is_empty() for reservation_area in self.reservation_areas.values())
+            not reservation_area.is_empty()
+            for reservation_area in self.reservation_areas.values()
+        )
 
     def unlock_all_entries(self) -> None:
         for reservation_area in self.reservation_areas.values():

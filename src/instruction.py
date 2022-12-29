@@ -5,13 +5,11 @@ class Instruction(ABC):
     def __init__(self) -> None:
         self.operation = None
 
-    @abstractmethod
-    def get_reservation_area(self) -> str:
-        raise NotImplementedError
-
 
 class TwoOperandInstruction(Instruction, ABC):
-    def __init__(self, latency: int, des: str, first_operand: str, second_operand: str) -> None:
+    def __init__(
+        self, latency: int, des: str, first_operand: str, second_operand: str
+    ) -> None:
         super().__init__()
         self.latency = latency
         self.des = des
@@ -19,7 +17,7 @@ class TwoOperandInstruction(Instruction, ABC):
         self.second_operand = second_operand
 
     def __str__(self) -> str:
-        return f' {self.des} {self.first_operand} {self.second_operand}'
+        return f" {self.des} {self.first_operand} {self.second_operand}"
 
     @abstractmethod
     def get_reservation_area(self) -> str:
@@ -31,12 +29,14 @@ class TwoOperandInstruction(Instruction, ABC):
 
 
 class AddInstruction(TwoOperandInstruction):
-    def __init__(self, latency: int, des: str, first_operand: str, second_operand: str) -> None:
+    def __init__(
+        self, latency: int, des: str, first_operand: str, second_operand: str
+    ) -> None:
         super().__init__(latency, des, first_operand, second_operand)
-        self.operation = 'ADD.D'
+        self.operation = "ADD.D"
 
     def __str__(self) -> str:
-        return f'{self.operation} {super().__str__()}'
+        return f"{self.operation} {super().__str__()}"
 
     __repr__ = __str__
 
@@ -44,16 +44,18 @@ class AddInstruction(TwoOperandInstruction):
         return first_operand + second_operand
 
     def get_reservation_area(self) -> str:
-        return 'A'
+        return "A"
 
 
 class SubInstruction(TwoOperandInstruction):
-    def __init__(self, latency: int, des: str, first_operand: str, second_operand: str) -> None:
+    def __init__(
+        self, latency: int, des: str, first_operand: str, second_operand: str
+    ) -> None:
         super().__init__(latency, des, first_operand, second_operand)
-        self.operation = 'SUB.D'
+        self.operation = "SUB.D"
 
     def __str__(self) -> str:
-        return f'{self.operation} {super().__str__()}'
+        return f"{self.operation} {super().__str__()}"
 
     __repr__ = __str__
 
@@ -61,16 +63,18 @@ class SubInstruction(TwoOperandInstruction):
         return first_operand - second_operand
 
     def get_reservation_area(self) -> str:
-        return 'A'
+        return "A"
 
 
 class MulInstruction(TwoOperandInstruction):
-    def __init__(self, latency: int, des: str, first_operand: str, second_operand: str) -> None:
+    def __init__(
+        self, latency: int, des: str, first_operand: str, second_operand: str
+    ) -> None:
         super().__init__(latency, des, first_operand, second_operand)
-        self.operation = 'MUL.D'
+        self.operation = "MUL.D"
 
     def __str__(self) -> str:
-        return f'{self.operation} {super().__str__()}'
+        return f"{self.operation} {super().__str__()}"
 
     __repr__ = __str__
 
@@ -78,16 +82,18 @@ class MulInstruction(TwoOperandInstruction):
         return first_operand * second_operand
 
     def get_reservation_area(self) -> str:
-        return 'M'
+        return "M"
 
 
 class DivInstruction(TwoOperandInstruction):
-    def __init__(self, latency: int, des: str, first_operand: str, second_operand: str) -> None:
+    def __init__(
+        self, latency: int, des: str, first_operand: str, second_operand: str
+    ) -> None:
         super().__init__(latency, des, first_operand, second_operand)
-        self.operation = 'DIV.D'
+        self.operation = "DIV.D"
 
     def __str__(self) -> str:
-        return f'{self.operation} {super().__str__()}'
+        return f"{self.operation} {super().__str__()}"
 
     __repr__ = __str__
 
@@ -98,10 +104,70 @@ class DivInstruction(TwoOperandInstruction):
             return 0.0
 
     def get_reservation_area(self) -> str:
-        return 'M'
+        return "M"
 
 
-class InstructionFactory():
+class OneOperandInstruction(Instruction, ABC):
+    def __init__(self, latency: int, des: str, address: int) -> None:
+        super().__init__()
+        self.latency = latency
+        self.des = des
+        self.address = address
+
+    def __str__(self) -> str:
+        return f" {self.des} {self.des} {self.address}"
+
+    @abstractmethod
+    def get_buffer(self) -> str:
+        raise NotImplementedError
+
+    @abstractmethod
+    def calculate(self) -> float:
+        raise NotImplementedError
+
+
+class LoadInstruction(OneOperandInstruction):
+    def __init__(self, latency: int, des: str, address: int) -> None:
+        super().__init__(latency, des, address)
+        self.operation = "L.D"
+
+    def __str__(self) -> str:
+        return f"{self.operation} {super().__str__()}"
+
+    __repr__ = __str__
+
+    def calculate(self) -> float:
+        from .components import Memory
+
+        return Memory.get_instance().get_memory_value(self.address)
+
+    def get_buffer(self) -> str:
+        return "L"
+
+
+class StoreInstruction(OneOperandInstruction):
+    def __init__(self, latency: int, des: str, address: int) -> None:
+        super().__init__(latency, des, address)
+        self.operation = "S.D"
+
+    def __str__(self) -> str:
+        return f"{self.operation} {super().__str__()}"
+
+    __repr__ = __str__
+
+    def calculate(self) -> float:
+        from .components import RegisterFile, Memory
+
+        Memory.get_instance().set_memory_value(
+            self.address, RegisterFile.get_instance().get_register_value(self.des)
+        )
+        return 0.0
+
+    def get_buffer(self) -> str:
+        return "S"
+
+
+class InstructionFactory:
     def __init__(self, tokens: list[str], latencies: dict[str, int]) -> None:
         self.tokens = tokens
         self.latencies = latencies
@@ -109,13 +175,41 @@ class InstructionFactory():
 
     def get_instruction(self) -> Instruction:
         match self.operation:
-            case 'ADD.D':
-                return AddInstruction(self.latencies[self.operation], self.tokens[1], self.tokens[2], self.tokens[3])
-            case 'SUB.D':
-                return SubInstruction(self.latencies[self.operation], self.tokens[1], self.tokens[2], self.tokens[3])
-            case 'MUL.D':
-                return MulInstruction(self.latencies[self.operation], self.tokens[1], self.tokens[2], self.tokens[3])
-            case 'DIV.D':
-                return DivInstruction(self.latencies[self.operation], self.tokens[1], self.tokens[2], self.tokens[3])
+            case "ADD.D":
+                return AddInstruction(
+                    self.latencies[self.operation],
+                    self.tokens[1],
+                    self.tokens[2],
+                    self.tokens[3],
+                )
+            case "SUB.D":
+                return SubInstruction(
+                    self.latencies[self.operation],
+                    self.tokens[1],
+                    self.tokens[2],
+                    self.tokens[3],
+                )
+            case "MUL.D":
+                return MulInstruction(
+                    self.latencies[self.operation],
+                    self.tokens[1],
+                    self.tokens[2],
+                    self.tokens[3],
+                )
+            case "DIV.D":
+                return DivInstruction(
+                    self.latencies[self.operation],
+                    self.tokens[1],
+                    self.tokens[2],
+                    self.tokens[3],
+                )
+            case "L.D":
+                return LoadInstruction(
+                    self.latencies[self.operation], self.tokens[1], int(self.tokens[2])
+                )
+            case "S.D":
+                return StoreInstruction(
+                    self.latencies[self.operation], self.tokens[1], int(self.tokens[2])
+                )
 
-        raise Exception(f'Invalid operation: {self.operation}')
+        raise Exception(f"Invalid operation: {self.operation}")
