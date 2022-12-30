@@ -10,6 +10,8 @@ import styled from 'styled-components';
 import LoadingButton from '@mui/lab/LoadingButton';
 import * as Yup from 'yup';
 import validateFormData from '../utils/validateFormData';
+import axios from 'axios';
+import { useNavigate } from 'react-router';
 
 const HorizontalContainer = styled.div`
 	display: flex;
@@ -20,6 +22,8 @@ const HorizontalContainer = styled.div`
 `;
 
 const Setup = () => {
+	const navigate = useNavigate();
+
 	const [code, setCode] = useState('');
 	const [formData, setFormData] = useState({
 		addLatency: 2,
@@ -58,7 +62,16 @@ const Setup = () => {
 						'S.D': formData.storeLatency,
 					},
 				};
-				console.log(requestData);
+
+				await axios
+					.post('http://127.0.0.1:5000/api/v1/run', requestData)
+					.then((response) => {
+						console.log(response.data);
+						navigate('/run', { state: response.data });
+					})
+					.catch((error) => {
+						console.log(error);
+					});
 			})
 			.catch((errors) => {
 				setFormErrors(errors);

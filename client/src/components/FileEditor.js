@@ -17,7 +17,6 @@ const FileEditor = ({ code, setCode }) => {
 			const reader = new FileReader();
 			reader.onload = (event) => {
 				const fileContent = event.target.result;
-				console.log(fileContent);
 				setCode(fileContent);
 			};
 			reader.readAsText(file);
