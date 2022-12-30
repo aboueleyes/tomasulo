@@ -108,18 +108,24 @@ class BufferEntry:
         self.set_busy(False)
 
     def to_json(self) -> dict[str, object]:
-        return {
-            "busy": self.busy,
-            "address": self.address,
-            "v": self.v,
-            "q": self.q,
-            "output": self.output,
-            "state": self.state.value,
-            "time": self.time,
-            "locked": self.locked,
-            "tag": self.tag,
-            "op": self.instruction.operation if self.instruction else None,
-        }
+        if self.tag[0] == "S":
+            return {
+                "tag": self.tag,
+                "busy": self.busy,
+                "address": self.address,
+                "v": self.v,
+                "q": self.q,
+                "time": self.time,
+                "state": self.state.value,
+            }
+        else:
+            return {
+                "tag": self.tag,
+                "busy": self.busy,
+                "address": self.address,
+                "time": self.time,
+                "state": self.state.value,
+            }
 
 
 class BufferArea(HasDependencies):
@@ -190,12 +196,7 @@ class BufferArea(HasDependencies):
         return not any(value.busy for value in self.buffer_entries.values())
 
     def to_json(self) -> dict[str, object]:
-        return {
-            "tag": self.tag,
-            "buffer_entries": {
-                key: value.to_json() for key, value in self.buffer_entries.items()
-            },
-        }
+        return {key: value.to_json() for key, value in self.buffer_entries.items()}
 
 
 class BufferAreas:
@@ -227,4 +228,4 @@ class BufferAreas:
         return self.buffer_areas
 
     def to_json(self) -> dict[str, object]:
-        return ({key: value.to_json() for key, value in self.buffer_areas.items()},)
+        return {key: value.to_json() for key, value in self.buffer_areas.items()}

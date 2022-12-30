@@ -69,7 +69,10 @@ class RegisterFile(HasDependencies):
         )
 
     def to_json(self) -> dict[str, Union[str, float]]:
-        return json.loads(json.dumps(self.register_map))
+        return {
+            register: {"Register": register, "value": value}
+            for register, value in self.register_map.items()
+        }
 
 
 class Memory:
@@ -95,4 +98,7 @@ class Memory:
         self.memory_map[address] = value
 
     def to_json(self) -> dict[int, Union[str, float]]:
-        return json.loads(json.dumps(self.memory_map))
+        return {
+            str(index): {"address": address, "value": value}
+            for index, (address, value) in enumerate(self.memory_map.items())
+        }
