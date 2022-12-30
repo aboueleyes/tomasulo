@@ -138,6 +138,7 @@ class ReservationEntry:
 
     def to_json(self) -> dict[str, object]:
         return {
+            "tag": self.tag,
             "busy": self.busy,
             "op": self.op,
             "vj": self.vj,
@@ -146,8 +147,6 @@ class ReservationEntry:
             "qk": self.qk,
             "time": self.time,
             "state": self.state.value,
-            "output": self.output,
-            "tag": self.tag,
         }
 
 
@@ -273,7 +272,7 @@ class ExecutingInstructionQueue:
         )
         if not writing_back_entries:
             return None
-        print(f"Writing back {writing_back_entries[-1]}")
+        # print(f"Writing back {writing_back_entries[-1]}")
         self.executing_instruction_queue.remove(writing_back_entries[-1])
-        print(f"Executing instruction queue {self.executing_instruction_queue}")
+        # print(f"Executing instruction queue {self.executing_instruction_queue}")
         return writing_back_entries.pop()

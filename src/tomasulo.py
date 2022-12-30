@@ -85,21 +85,6 @@ class Tomasulo:
             entry.write_back()
 
     def is_running(self) -> bool:
-        print("=====================================")
-        print("Reservation areas:")
-        for reservation_area in self.reservation_areas.values():
-            for k, entry in reservation_area.reservation_area.items():
-                if entry.busy:
-                    print(k, entry)
-        print("=====================================")
-
-        print("************************************")
-        print("Buffer areas:")
-        for buffer_area in self.buffer_areas.values():
-            for k, entry in buffer_area.buffer_entries.items():
-                if entry.busy:
-                    print(k, entry)
-        print("*****************************************")
         return (
             not self.instructions_queue.is_empty()
             or any(
@@ -119,3 +104,9 @@ class Tomasulo:
         for buffer_area in self.buffer_areas.values():
             for entry in buffer_area.buffer_entries.values():
                 entry.locked = False
+
+    def tick(self) -> None:
+        self.unlock_all_entries()
+        self.issue_instruction()
+        self.execute()
+        self.write_back()
