@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import json
 
 
 from src.instructions_parser import InstructionParser
@@ -45,7 +46,8 @@ def run():
         current_cycle += 1
         
     out.append(json_out(current_cycle))
-    return jsonify(out)
+    # return jsonify(out)
+    return json.dumps(out)
 
 
 app.run(
