@@ -1,4 +1,7 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
+import json
+
 
 from src.instructions_parser import InstructionParser
 from src.buffer import BufferAreas
@@ -7,6 +10,7 @@ from src.tomasulo import Tomasulo
 from src.components import Memory, RegisterFile
 
 app = Flask(__name__)
+CORS(app)
 
 
 json_out = lambda current_cycle: {
@@ -42,7 +46,8 @@ def run():
         current_cycle += 1
         
     out.append(json_out(current_cycle))
-    return jsonify(out)
+    # return jsonify(out)
+    return json.dumps(out)
 
 
 app.run(

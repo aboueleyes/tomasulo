@@ -5,6 +5,7 @@ import BasicTabs from '../components/Tabs';
 import { Grid, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useLocation } from 'react-router';
 
 const HorizontalContainer = styled.div`
 	display: flex;
@@ -30,25 +31,10 @@ const MainContainer = styled.div`
 `;
 
 const Simulation = () => {
-	const [data, setData] = useState(null);
+	const location = useLocation();
+	console.log(location.state);
+	const data = location.state;
 	const [cycle, setCycle] = useState(0);
-
-	useEffect(() => {
-		const fetchData = async () => {
-			const result = await axios.get('http://localhost:3001/data');
-			return result.data;
-		};
-
-		fetchData()
-			.then((data) => {
-				setData(data);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	}, []);
-
-	if (!data) return <div>Loading...</div>;
 
 	return (
 		<>
