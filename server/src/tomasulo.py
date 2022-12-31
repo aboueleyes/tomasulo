@@ -1,11 +1,18 @@
+import time
 from .buffer import BufferArea, BufferAreas
 from .reservation import ReservationArea, ReservationAreas, ExecutingInstructionQueue
 from .instruction import Instruction, OneOperandInstruction, TwoOperandInstruction
-from .components import InstructionsQueue, RegisterFile
+from .components import InstructionsQueue, Memory, RegisterFile
+
+import logging
+from rich.table import Table
+from rich.console import Console
+
+log = logging.getLogger("rich")
 
 
 class Tomasulo:
-    def __init__(self, instructions: list[Instruction]):
+    def __init__(self, instructions: list[Instruction], debug: bool = False):
         self.register_file: RegisterFile = RegisterFile.get_instance()  # type: ignore
         self.instructions_queue = InstructionsQueue(instructions)
         self.reservation_areas = (
@@ -13,6 +20,7 @@ class Tomasulo:
         )  # type: ignore
         self.buffer_areas = BufferAreas.get_instance().get_buffer_areas()
         self.executing_instructions_queue: ExecutingInstructionQueue = ExecutingInstructionQueue.get_instance()  # type: ignore
+        self.debug = debug
 
     def _map_instruction_to_reservation_area(
         self, instruction: Instruction
@@ -71,6 +79,7 @@ class Tomasulo:
                 if entry.locked:
                     continue
                 entry.execute()
+                log.info(f"Executing {entry.instruction}")
 
         for buffer_area in self.buffer_areas.values():
             execution_entries_tags = buffer_area.get_all_executable_entry_tags()
@@ -79,12 +88,24 @@ class Tomasulo:
                 if entry.locked:
                     continue
                 entry.execute()
+                log.info(f"Executing {entry.instruction}")
 
     def write_back(self) -> None:
         if entry := self.executing_instructions_queue.get_next_writing_back_entry():
             entry.write_back()
+            log.info(f"Writing back {entry.instruction}")
 
     def is_running(self) -> bool:
+        if self.debug:
+            time.sleep(0.5)
+            self._print_reservation_areas()
+            time.sleep(0.5)
+            self._print_buffer_tables()
+            time.sleep(0.5)
+            self._print_memory()
+            time.sleep(0.5)
+            self._print_register_file()
+
         return (
             not self.instructions_queue.is_empty()
             or any(
@@ -95,6 +116,58 @@ class Tomasulo:
                 not buffer_area.is_empty() for buffer_area in self.buffer_areas.values()
             )
         )
+
+    def _print_memory(self):
+        table = Table(title="Memory")
+        console = Console()
+        table.add_column("Address", style="cyan")
+        table.add_column("Value", style="green")
+        for address, value in Memory.get_instance().memory_map.items():
+            table.add_row(str(address), str(value)) if value != 0 else None
+        console.print(table)
+
+    def _print_register_file(self):
+        table = Table(title="Register File")
+        console = Console()
+        table.add_column("Register", style="cyan")
+        table.add_column("Value", style="green")
+        for register, value in RegisterFile.get_instance().register_map.items():
+            table.add_row(str(register), str(value)) if value != 0 else None
+        console.print(table)
+
+    def _print_reservation_areas(self):
+        table = Table(title="Reservation Areas")
+        console = Console()
+        table.add_column("Reservation Area", style="cyan")
+        table.add_column("Busy", style="green")
+        table.add_column("Vj", style="magenta")
+        table.add_column("Vk", style="magenta")
+        table.add_column("Qj", style="yellow")
+        table.add_column("Qk", style="yellow")
+        for reservation_area in self.reservation_areas.values():
+            for entry in reservation_area.reservation_area.values():
+                table.add_row(
+                    entry.tag,
+                    str(entry.busy),
+                    str(entry.vj),
+                    str(entry.vk),
+                    str(entry.qj),
+                    str(entry.qk),
+                )
+        console.print(table)
+
+    def _print_buffer_tables(self):
+        table = Table(title="Buffer Areas")
+        console = Console()
+
+        table.add_column("Buffer Area", style="yellow")
+        table.add_column("Busy", style="green")
+        table.add_column("Value", style="magenta")
+
+        for buffer_area in self.buffer_areas.values():
+            for entry in buffer_area.buffer_entries.values():
+                table.add_row(str(entry.tag), str(entry.busy), str(entry.v))
+        console.print(table)
 
     def unlock_all_entries(self) -> None:
         for reservation_area in self.reservation_areas.values():
@@ -110,3 +183,11 @@ class Tomasulo:
         self.issue_instruction()
         self.execute()
         self.write_back()
+
+    def reset(self) -> None:
+        self.executing_instructions_queue.reset()
+        ReservationAreas.get_instance().reset()
+        BufferAreas.get_instance().reset()
+        import os
+
+        os.remove("instructions.txt")
