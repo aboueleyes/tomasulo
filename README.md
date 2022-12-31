@@ -39,7 +39,15 @@
 
 ## ShowCase 
 
+### CLI
+
 [![asciicast](https://asciinema.org/a/2f3H6boMnNIlENxU0kMctZ83M.svg)](https://asciinema.org/a/2f3H6boMnNIlENxU0kMctZ83M)
+
+### GUI
+
+<img width="1440" alt="Screenshot 2022-12-31 at 8 27 22 PM" src="https://user-images.githubusercontent.com/37817681/210152692-7bf4ef86-dddc-45be-a896-5bee59c30d1d.png">
+<img width="1440" alt="Screenshot 2022-12-31 at 8 27 40 PM" src="https://user-images.githubusercontent.com/37817681/210152696-d1eb9527-3a9f-4a2c-abea-af75435551e9.png">
+
  
 ## Approach 
 Our Approach for the algo is to simulate what actullay happens in a hardware by simaulating every component by class and include its logic in the class.
