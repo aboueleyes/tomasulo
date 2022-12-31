@@ -1,11 +1,22 @@
+import time
 from src.instructions_parser import InstructionParser
 from src.tomasulo import Tomasulo
-from src.components import Memory, RegisterFile
-from src.reservation import ReservationAreas
-from src.buffer import BufferAreas
+from src.components import Memory
 import argparse
 import yaml
-import json
+from rich.console import Console
+import logging
+from rich.logging import RichHandler
+
+FORMAT = "%(message)s"
+logging.basicConfig(
+    level="NOTSET", format=FORMAT, datefmt="[%X]", handlers=[RichHandler()]
+)
+
+log = logging.getLogger("rich")
+
+# logger using rich
+console = Console()
 
 
 def main():
@@ -20,24 +31,16 @@ def main():
     instructions_parser.read_file(file_name=args.file)
     instructions = instructions_parser.get_instructions()
     Memory.get_instance().set_memory_value(0, 1.0)
-    tomo = Tomasulo(instructions=instructions)
+    tomo = Tomasulo(instructions=instructions, debug=True)
     current_cycle = 1
-    out = []
 
-    json_out = lambda current_cycle: {
-        "buffer": BufferAreas.get_instance().to_json(),
-        "reservation": ReservationAreas.get_instance().to_json(),
-        "memory": Memory.get_instance().to_json(),
-        "registers": RegisterFile.get_instance().to_json(),
-        "cycle": current_cycle,
-    }
-
-    while tomo.is_running():
-        out.append(json_out(current_cycle))
-        tomo.tick()
-        current_cycle += 1
-    out.append(json_out(current_cycle))
-    print(json.dumps(out, indent=4))
+    with console.status("[bold green]Running...") as status:
+        while tomo.is_running():
+            tomo.tick()
+            current_cycle += 1
+            time.sleep(1.8)
+            console.clear()
+            log.info(f"Cycle: {current_cycle}")
 
 
 if __name__ == "__main__":
