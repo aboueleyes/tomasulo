@@ -53,6 +53,7 @@ class BufferEntry:
     def adjust_state(self) -> None:
         if self.time == 0:
             self.set_state(EntryState.WRITING_BACK)
+            self.instruction.status = "WRITING BACK"
             self.locked = True
 
     def execute(self) -> None:
@@ -66,6 +67,7 @@ class BufferEntry:
                 ExecutingInstructionQueue.get_instance().add_entry(self)  # type: ignore
                 self.decrease_time()
                 self.adjust_state()
+                self.instruction.status = "EXECUTING"
 
             case EntryState.EXECUTING:
                 self.decrease_time()
@@ -106,6 +108,7 @@ class BufferEntry:
             ] = self.output  # type: ignore
 
         self.set_busy(False)
+        self.instruction.status = "FINISHED"
 
     def to_json(self) -> dict[str, object]:
         if self.tag[0] == "S":
@@ -116,7 +119,7 @@ class BufferEntry:
                 "v": self.v,
                 "q": self.q,
                 "time": self.time,
-                "state": self.state.value,
+                # "state": self.state.value,
             }
         else:
             return {
@@ -124,7 +127,7 @@ class BufferEntry:
                 "busy": self.busy,
                 "address": self.address,
                 "time": self.time,
-                "state": self.state.value,
+                # "state": self.state.value,
             }
 
 

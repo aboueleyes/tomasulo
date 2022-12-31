@@ -32,6 +32,15 @@ class InstructionsQueue:
     def is_empty(self) -> bool:
         return self.current_instruction_index >= len(self.instructions)
 
+    def to_json(self) -> list[dict[str, object]]:
+        return {
+            index: {
+                "instruction": instruction.string_representation,
+                "status": instruction.status,
+            }
+            for index, instruction in enumerate(self.instructions)
+        }
+
 
 class RegisterFile(HasDependencies):
     __shared_instance = None
