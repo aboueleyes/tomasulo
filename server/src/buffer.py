@@ -229,3 +229,9 @@ class BufferAreas:
 
     def to_json(self) -> dict[str, object]:
         return {key: value.to_json() for key, value in self.buffer_areas.items()}
+
+    def reset(self) -> None:
+        self.buffer_areas = {
+            "L": BufferArea(3, "L"),
+            "S": BufferArea(3, "S"),
+        }

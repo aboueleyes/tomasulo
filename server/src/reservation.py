@@ -241,6 +241,12 @@ class ReservationAreas:
     def to_json(self) -> dict[str, dict[str, dict[str, str]]]:
         return {key: value.to_json() for key, value in self.reservation_areas.items()}
 
+    def reset(self) -> None:
+        self.reservation_areas = {
+            "A": ReservationArea(3, "A"),
+            "M": ReservationArea(2, "M"),
+        }
+
 
 class ExecutingInstructionQueue:
     __shared_instance = None
@@ -276,3 +282,6 @@ class ExecutingInstructionQueue:
         self.executing_instruction_queue.remove(writing_back_entries[-1])
         # print(f"Executing instruction queue {self.executing_instruction_queue}")
         return writing_back_entries.pop()
+
+    def reset(self) -> None:
+        self.executing_instruction_queue = []

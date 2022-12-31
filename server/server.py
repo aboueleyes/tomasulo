@@ -30,10 +30,10 @@ def run():
 
     instructions_parser = InstructionParser(latencies=latencies)
 
-    with open("./sample-instructions.txt", "w") as file:
+    with open("./instructions.txt", "w") as file:
         file.write(payload["instructions"])
 
-    instructions_parser.read_file(file_name="./sample-instructions.txt")
+    instructions_parser.read_file(file_name="./instructions.txt")
     instructions = instructions_parser.get_instructions()
 
     tomo = Tomasulo(instructions=instructions)
@@ -44,9 +44,9 @@ def run():
         out.append(json_out(current_cycle))
         tomo.tick()
         current_cycle += 1
-        
+
     out.append(json_out(current_cycle))
-    # return jsonify(out)
+    tomo.reset()
     return json.dumps(out)
 
 

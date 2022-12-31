@@ -74,6 +74,9 @@ class RegisterFile(HasDependencies):
             for register, value in self.register_map.items()
         }
 
+    def reset(self) -> None:
+        self.register_map = {f"F{i}": 0.0 for i in range(32)}
+
 
 class Memory:
     __shared_instance = None
@@ -102,3 +105,6 @@ class Memory:
             str(index): {"address": address, "value": value}
             for index, (address, value) in enumerate(self.memory_map.items())
         }
+
+    def reset(self) -> None:
+        self.memory_map = {i: 0.0 for i in range(100)}

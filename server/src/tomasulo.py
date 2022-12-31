@@ -110,3 +110,11 @@ class Tomasulo:
         self.issue_instruction()
         self.execute()
         self.write_back()
+
+    def reset(self) -> None:
+        self.executing_instructions_queue.reset()
+        ReservationAreas.get_instance().reset()
+        BufferAreas.get_instance().reset()
+        import os
+
+        os.remove("instructions.txt")
