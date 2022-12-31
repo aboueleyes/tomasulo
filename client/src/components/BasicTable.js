@@ -7,69 +7,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-// const columnNames = ['Register', 'Value'];
-
-const content = {
-	R0: {
-		Register: 'R0',
-		Value: 0,
-	},
-	R1: {
-		Register: 'R1',
-		Value: 1,
-	},
-	R2: {
-		Register: 'R2',
-		Value: 2,
-	},
-};
-
-const A = {
-	A1: {
-		busy: false,
-		op: 'ADD.D',
-		vj: 1.0,
-		vk: 1.0,
-		qj: null,
-		qk: null,
-		time: 0,
-		state: 'writing back',
-		output: 2.0,
-		tag: 'A1',
-	},
-	A2: {
-		busy: false,
-		op: null,
-		vj: null,
-		vk: null,
-		qj: null,
-		qk: null,
-		time: -1,
-		state: 'issued',
-		output: null,
-		tag: 'A2',
-	},
-	A3: {
-		busy: false,
-		op: null,
-		vj: null,
-		vk: null,
-		qj: null,
-		qk: null,
-		time: -1,
-		state: 'issued',
-		output: null,
-		tag: 'A3',
-	},
-};
-
 export default function BasicTable({ content }) {
-	// Object.values(content).map((value, index) => {
-	// 	Object.keys(value).map((key, index2) => {
-	// 		console.log(key);
-	// 	});
-	// });
-
 	const getColumnNames = (content) => {
 		let columnNames = [];
 		const firstRow = Object.values(content)[0];
@@ -89,10 +27,6 @@ export default function BasicTable({ content }) {
 						{columnNames.map((name, index) => (
 							<TableCell key={index}>{name}</TableCell>
 						))}
-
-						{/* {columnNames.map((name, index) => (
-							<TableCell key={index}>{name}</TableCell>
-						))} */}
 					</TableRow>
 				</TableHead>
 				<TableBody>
@@ -103,20 +37,8 @@ export default function BasicTable({ content }) {
 							))}
 						</TableRow>
 					))}
-
-					{/* {Object.entries(content).map(([key, value], index) => (
-						<TableRow key={index}>
-							<TableCell>{key}</TableCell>
-							<TableCell>{value}</TableCell>
-						</TableRow>
-					))} */}
 				</TableBody>
 			</Table>
 		</TableContainer>
 	);
 }
-
-BasicTable.defaultProps = {
-	// columnNames,
-	content: A,
-};

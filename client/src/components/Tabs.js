@@ -54,12 +54,12 @@ export default function BasicTabs({ tabNames, components }) {
 					aria-label='basic tabs example'
 				>
 					{tabNames.map((tabName, index) => (
-						<Tab label={tabName} {...a11yProps(index)} />
+						<Tab key={index} label={tabName} {...a11yProps(index)} />
 					))}
 				</Tabs>
 			</Box>
 			{components.map((component, index) => (
-				<TabPanel value={value} index={index}>
+				<TabPanel value={value} index={index} key={index}>
 					{component}
 				</TabPanel>
 			))}

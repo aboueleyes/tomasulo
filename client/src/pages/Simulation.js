@@ -1,11 +1,10 @@
 import BasicTable from '../components/BasicTable';
 import styled from 'styled-components';
 import Navbar from '../components/Navbar';
-import BasicTabs from '../components/Tabs';
 import { Grid, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useState } from 'react';
 import { useLocation } from 'react-router';
+import SideTabs from '../components/SideTabs';
 
 const HorizontalContainer = styled.div`
 	display: flex;
@@ -41,12 +40,16 @@ const Simulation = () => {
 			<Navbar lastCycle={data.length - 1} cycle={cycle} setCycle={setCycle} />
 			<HorizontalContainer>
 				<LeftSideContainer>
-					<BasicTabs
+					{/* <BasicTabs
 						tabNames={['Register File', 'Memory']}
 						components={[
 							<BasicTable content={data[cycle].registers} />,
 							<BasicTable content={data[cycle].memory} />,
 						]}
+					/> */}
+					<SideTabs
+						registers={data[cycle].registers}
+						memory={data[cycle].memory}
 					/>
 				</LeftSideContainer>
 

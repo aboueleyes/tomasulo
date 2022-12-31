@@ -6,7 +6,6 @@ import { javascript } from '@codemirror/lang-javascript';
 const Container = styled.div`
 	display: flex;
 	flex-direction: column;
-	width: 500px;
 `;
 
 const FileEditor = ({ code, setCode }) => {
@@ -17,6 +16,7 @@ const FileEditor = ({ code, setCode }) => {
 			const reader = new FileReader();
 			reader.onload = (event) => {
 				const fileContent = event.target.result;
+				console.log(fileContent);
 				setCode(fileContent);
 			};
 			reader.readAsText(file);
@@ -30,7 +30,7 @@ const FileEditor = ({ code, setCode }) => {
 		<Container>
 			<CodeMirror
 				value={code}
-				height='400px'
+				height='300px'
 				extensions={[javascript({ jsx: true })]}
 				onChange={onChange}
 				theme='dark'
