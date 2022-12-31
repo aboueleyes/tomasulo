@@ -55,6 +55,10 @@ const Simulation = () => {
 
 				<MainContainer>
 					<Grid container spacing={2}>
+						<Grid item md={12} lg={12}>
+							<Typography variant='h6'>{'Instructions Queue'}</Typography>
+							<BasicTable content={data[cycle].instructions_queue} />
+						</Grid>
 						<Grid item md={6} lg={6}>
 							<Typography variant='h6'>
 								{'Addition Reservation Stations'}
