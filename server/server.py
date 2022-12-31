@@ -27,6 +27,13 @@ def run():
     payload = request.get_json()
     instructions = payload["instructions"].split("\n")
     latencies = payload["latencies"]
+    memory = payload["memory"]
+    registers = payload["registers"]
+
+    for register, value in registers.items():
+        RegisterFile.get_instance().set_register_value(register, value)
+    for address, value in memory.items():
+        Memory.get_instance().set_memory_value(address, value)
 
     instructions_parser = InstructionParser(latencies=latencies)
 

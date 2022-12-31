@@ -188,7 +188,7 @@ class BufferArea(HasDependencies):
     def get_dependencies(self, tag: str) -> list[BufferEntry]:
         return [
             value
-            for key, value in self.buffer_entries.items()
+            for value in self.buffer_entries.values()
             if value.busy and value.q == tag
         ]
 
