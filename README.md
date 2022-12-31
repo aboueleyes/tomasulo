@@ -18,7 +18,29 @@
  5. Testing Phase
    - The testing phase was includeded in the dev phase where you followed a behivoural driven develpomenet where we first write test scinarios and then write code to implement them 
    - Finally an end to end system testing was applied where insursing every component is integrating correctly and the whole logic is OK.
-   
+ 
+ 
+## How to run 
+### GUI 
+
+```bash 
+> git clone https://github.com/aboueleyes/tomasulo
+> cd tomasulo
+> cd server && pip install -r requirements.txt && python3.10 server.py && cd - 
+> cd client && npm i && npm start
+```
+
+### CLI 
+```bash 
+> git clone https://github.com/aboueleyes/tomasulo
+> cd tomasulo
+> cd server && pip install -r requirements.txt && python3.10 main.py
+```
+
+## ShowCase 
+
+[![asciicast](https://asciinema.org/a/2f3H6boMnNIlENxU0kMctZ83M.svg)](https://asciinema.org/a/2f3H6boMnNIlENxU0kMctZ83M)
+ 
 ## Approach 
 Our Approach for the algo is to simulate what actullay happens in a hardware by simaulating every component by class and include its logic in the class.
 
