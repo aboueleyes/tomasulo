@@ -36,7 +36,7 @@ class InstructionsQueue:
         return {
             index: {
                 "instruction": instruction.string_representation,
-                "status": instruction.status,
+                "status": f'{instruction.status.ljust(20)}' if instruction.status else "NULL".ljust(20),
             }
             for index, instruction in enumerate(self.instructions)
         }
