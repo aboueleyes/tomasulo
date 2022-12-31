@@ -36,6 +36,7 @@ class Tomasulo:
         if not next_instruction:
             return
 
+
         if issubclass(type(next_instruction), OneOperandInstruction):
             buffer_area = self._map_instruction_to_buffer_area(next_instruction)
             if not buffer_area:
@@ -44,6 +45,7 @@ class Tomasulo:
             if not buffer_area.has_free_entry():
                 self.instructions_queue.current_instruction_index -= 1
                 return
+            next_instruction.status = "ISSUED"
 
             entry = buffer_area.get_next_free_entry()
             entry.set_instruction(next_instruction)
@@ -62,6 +64,7 @@ class Tomasulo:
                 self.instructions_queue.current_instruction_index -= 1
                 return
 
+            next_instruction.status = "ISSUED"
             entry = reservation_area.get_next_free_entry()
             # type ignore is needed because mypy doesn't know that issubclass() is true
             entry.set_instruction(next_instruction)  # type: ignore
@@ -98,6 +101,8 @@ class Tomasulo:
     def is_running(self) -> bool:
         if self.debug:
             time.sleep(0.5)
+            self._print_instructions_queue()
+            time.sleep(0.5)
             self._print_reservation_areas()
             time.sleep(0.5)
             self._print_buffer_tables()
@@ -116,6 +121,18 @@ class Tomasulo:
                 not buffer_area.is_empty() for buffer_area in self.buffer_areas.values()
             )
         )
+
+    def _print_instructions_queue(self):
+        table = Table(title="Instructions Queue")
+        console = Console()
+        table.add_column("Index", style="cyan")
+        table.add_column("Instruction", style="green")
+        table.add_column("Status", style="green")
+
+        for index, instruction in enumerate(self.instructions_queue.instructions):
+            table.add_row(str(index), str(instruction), instruction.status)
+
+        console.print(table)
 
     def _print_memory(self):
         table = Table(title="Memory")

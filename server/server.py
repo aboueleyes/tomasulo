@@ -13,12 +13,13 @@ app = Flask(__name__)
 CORS(app)
 
 
-json_out = lambda current_cycle: {
+json_out = lambda current_cycle, queue: {
     "buffer": BufferAreas.get_instance().to_json(),
     "reservation": ReservationAreas.get_instance().to_json(),
     "memory": Memory.get_instance().to_json(),
     "registers": RegisterFile.get_instance().to_json(),
     "cycle": current_cycle,
+    "instructions_queue": queue,
 }
 
 
@@ -49,11 +50,11 @@ def run():
     out = []
 
     while tomo.is_running():
-        out.append(json_out(current_cycle))
+        out.append(json_out(current_cycle), tomo.instructions_queue)
         tomo.tick()
         current_cycle += 1
 
-    out.append(json_out(current_cycle))
+    out.append(json_out(current_cycle), tomo.instructions_queue)
     tomo.reset()
     return json.dumps(out)
 

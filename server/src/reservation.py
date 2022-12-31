@@ -1,6 +1,7 @@
 from enum import Enum
-from typing import Type
+from typing import Optional, Type
 from itertools import chain
+
 
 from .components import HasDependencies, RegisterFile
 
@@ -26,7 +27,7 @@ class ReservationEntry:
         self.output: float | None = None
         self.tag = tag
         self.register_file: RegisterFile = RegisterFile.get_instance()  # type: ignore
-        self.instruction: TwoOperandInstruction | None = None
+        self.instruction: Optional[TwoOperandInstruction] = None
         self.locked: bool = False
 
     def set_instruction(self, instruction: TwoOperandInstruction) -> None:
@@ -78,6 +79,7 @@ class ReservationEntry:
     def adjust_state(self) -> None:
         if self.time == 0:
             self.set_state(EntryState.WRITING_BACK)
+            self.instruction.status = "WRITING BACK"
             self.locked = True
 
     def execute(self) -> None:
@@ -95,6 +97,7 @@ class ReservationEntry:
             case EntryState.ISSUED:
                 self.set_state(EntryState.EXECUTING)
                 self.locked = True
+                self.instruction.status = "EXECUTING"
                 ExecutingInstructionQueue.get_instance().add_entry(self)  # type: ignore
                 self.decrease_time()
                 self.adjust_state()
@@ -135,6 +138,7 @@ class ReservationEntry:
             ] = self.output  # type: ignore
 
         self.set_busy(False)
+        self.instruction.status = "FINISHED"
 
     def to_json(self) -> dict[str, object]:
         return {
@@ -146,7 +150,7 @@ class ReservationEntry:
             "qj": self.qj,
             "qk": self.qk,
             "time": self.time,
-            "state": self.state.value,
+            # "state": self.state.value,
         }
 
 
@@ -268,7 +272,7 @@ class ExecutingInstructionQueue:
     def add_entry(self, entry: ReservationEntry) -> None:
         self.executing_instruction_queue.append(entry)
 
-    def get_next_writing_back_entry(self) -> object | None:
+    def get_next_writing_back_entry(self) -> Optional[object]:
         writing_back_entries = list(
             filter(
                 lambda entry: entry.state == EntryState.WRITING_BACK

@@ -1,17 +1,20 @@
 from abc import ABC, abstractmethod
+from typing import Optional
 
 
 class Instruction(ABC):
-    def __init__(self) -> None:
+    def __init__(self, latency: int) -> None:
         self.operation = None
+        self.latency = latency
+        self.string_representation: Optional[str] = None
+        self.status = None
 
 
 class TwoOperandInstruction(Instruction, ABC):
     def __init__(
         self, latency: int, des: str, first_operand: str, second_operand: str
     ) -> None:
-        super().__init__()
-        self.latency = latency
+        super().__init__(latency)
         self.des = des
         self.first_operand = first_operand
         self.second_operand = second_operand
@@ -109,7 +112,7 @@ class DivInstruction(TwoOperandInstruction):
 
 class OneOperandInstruction(Instruction, ABC):
     def __init__(self, latency: int, des: str, address: int) -> None:
-        super().__init__()
+        super().__init__(latency=latency)
         self.latency = latency
         self.des = des
         self.address = address
@@ -156,8 +159,6 @@ class StoreInstruction(OneOperandInstruction):
     __repr__ = __str__
 
     def calculate(self) -> float:
-        from .components import RegisterFile, Memory
-
         return 0.0
 
     def get_buffer(self) -> str:
@@ -171,42 +172,55 @@ class InstructionFactory:
         self.operation = tokens[0]
 
     def get_instruction(self) -> Instruction:
+        string_representation = " ".join(self.tokens)
         match self.operation:
             case "ADD.D":
-                return AddInstruction(
+                add_instruction = AddInstruction(
                     self.latencies[self.operation],
                     self.tokens[1],
                     self.tokens[2],
                     self.tokens[3],
                 )
+                add_instruction.string_representation = string_representation
+                return add_instruction
             case "SUB.D":
-                return SubInstruction(
+                subtract_instruction = SubInstruction(
                     self.latencies[self.operation],
                     self.tokens[1],
                     self.tokens[2],
                     self.tokens[3],
                 )
+                subtract_instruction.string_representation = string_representation
+                return subtract_instruction
             case "MUL.D":
-                return MulInstruction(
+                multiply_instruction = MulInstruction(
                     self.latencies[self.operation],
                     self.tokens[1],
                     self.tokens[2],
                     self.tokens[3],
                 )
+                multiply_instruction.string_representation = string_representation
+                return multiply_instruction
             case "DIV.D":
-                return DivInstruction(
+                divide_instruction = DivInstruction(
                     self.latencies[self.operation],
                     self.tokens[1],
                     self.tokens[2],
                     self.tokens[3],
                 )
+                divide_instruction.string_representation = string_representation
+                return divide_instruction
             case "L.D":
-                return LoadInstruction(
+                load_instruction = LoadInstruction(
                     self.latencies[self.operation], self.tokens[1], int(self.tokens[2])
                 )
+                load_instruction.string_representation = string_representation
+                return load_instruction
             case "S.D":
-                return StoreInstruction(
+                store_instruction = StoreInstruction(
                     self.latencies[self.operation], self.tokens[1], int(self.tokens[2])
                 )
+                store_instruction.string_representation = string_representation
+                return store_instruction
 
         raise Exception(f"Invalid operation: {self.operation}")
