@@ -6,13 +6,19 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import { useNavigate } from 'react-router-dom';
 
 export default function Navbar({ cycle, setCycle, lastCycle }) {
+	const navigate = useNavigate();
 	return (
 		<Box sx={{ flexGrow: 1 }}>
 			<AppBar position='static'>
 				<Toolbar>
-					<Typography variant='h6' component='div'>
+					<Typography
+						variant='h6'
+						component='div'
+						onClick={() => navigate('/')}
+					>
 						Tomasulo Simulator
 					</Typography>
 

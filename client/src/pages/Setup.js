@@ -189,11 +189,11 @@ const Setup = () => {
 	const [memory, setMemory] = useState({
 		0: {
 			address: 0,
-			value: 1.0,
+			value: 0.0,
 		},
 		1: {
 			address: 1,
-			value: 2.0,
+			value: 0.0,
 		},
 		2: {
 			address: 2,
@@ -604,7 +604,7 @@ const Setup = () => {
 						'L.D': formData.loadLatency,
 						'S.D': formData.storeLatency,
 					},
-					registerFile: registers,
+					registers: registers,
 					memory: memory,
 				};
 

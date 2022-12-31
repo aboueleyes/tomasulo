@@ -29,11 +29,12 @@ def run():
     latencies = payload["latencies"]
     memory = payload["memory"]
     registers = payload["registers"]
+    
 
     for register, value in registers.items():
-        RegisterFile.get_instance().set_register_value(register, value)
+        RegisterFile.get_instance().set_register_value(value['Register'], value['value'])
     for address, value in memory.items():
-        Memory.get_instance().set_memory_value(address, value)
+        Memory.get_instance().set_memory_value(value['address'], value['value'])
 
     instructions_parser = InstructionParser(latencies=latencies)
 
