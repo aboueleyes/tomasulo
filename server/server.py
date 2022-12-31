@@ -30,12 +30,13 @@ def run():
     latencies = payload["latencies"]
     memory = payload["memory"]
     registers = payload["registers"]
-    
 
     for register, value in registers.items():
-        RegisterFile.get_instance().set_register_value(value['Register'], value['value'])
+        RegisterFile.get_instance().set_register_value(
+            value["Register"], value["value"]
+        )
     for address, value in memory.items():
-        Memory.get_instance().set_memory_value(value['address'], value['value'])
+        Memory.get_instance().set_memory_value(value["address"], value["value"])
 
     instructions_parser = InstructionParser(latencies=latencies)
 
@@ -50,11 +51,11 @@ def run():
     out = []
 
     while tomo.is_running():
-        out.append(json_out(current_cycle), tomo.instructions_queue)
+        out.append(json_out(current_cycle, queue=tomo.instructions_queue.to_json()))
         tomo.tick()
         current_cycle += 1
 
-    out.append(json_out(current_cycle), tomo.instructions_queue)
+    out.append(json_out(current_cycle, tomo.instructions_queue.to_json()))
     tomo.reset()
     return json.dumps(out)
 
