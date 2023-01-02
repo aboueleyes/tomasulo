@@ -23,7 +23,7 @@ class BufferEntry:
     def set_instruction(self, instruction: OneOperandInstruction) -> None:
         self.instruction = instruction
         self.address = instruction.address
-        self.time = instruction.latency
+        self.time = int(instruction.latency)
 
         if instruction.operation == "S.D":
             if type(self.register_file.get_register_value(instruction.des)) == float:
@@ -52,8 +52,8 @@ class BufferEntry:
 
     def adjust_state(self) -> None:
         if self.time == 0:
-            self.set_state(EntryState.WRITING_BACK)
-            self.instruction.status = "WRITING BACK"
+            # self.set_state(EntryState.WRITING_BACK)
+            # self.instruction.status = "WRITING BACK"
             self.locked = True
 
     def execute(self) -> None:
@@ -108,7 +108,7 @@ class BufferEntry:
             ] = self.output  # type: ignore
 
         self.set_busy(False)
-        self.instruction.status = "FINISHED"
+        self.time = -5
 
     def to_json(self) -> dict[str, object]:
         if self.tag[0] == "S":

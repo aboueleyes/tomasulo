@@ -1,6 +1,11 @@
 import time
 from .buffer import BufferArea, BufferAreas
-from .reservation import ReservationArea, ReservationAreas, ExecutingInstructionQueue
+from .reservation import (
+    EntryState,
+    ReservationArea,
+    ReservationAreas,
+    ExecutingInstructionQueue,
+)
 from .instruction import Instruction, OneOperandInstruction, TwoOperandInstruction
 from .components import InstructionsQueue, Memory, RegisterFile
 
@@ -35,7 +40,6 @@ class Tomasulo:
 
         if not next_instruction:
             return
-
 
         if issubclass(type(next_instruction), OneOperandInstruction):
             buffer_area = self._map_instruction_to_buffer_area(next_instruction)
@@ -77,12 +81,15 @@ class Tomasulo:
     def execute(self) -> None:
         for reservation_area in self.reservation_areas.values():
             execution_entries_tags = reservation_area.get_all_executable_entry_tags()
+            # log.info(f"Executing {execution_entries_tags}")
             for tag in execution_entries_tags:
                 entry = reservation_area.get_entry(tag)
+                # log.info(entry)
                 if entry.locked:
                     continue
                 entry.execute()
-                log.info(f"Executing {entry.instruction}")
+                # entry.instruction.status = "EXECUTING"
+                # log.info(f"Executing {entry.instruction}")
 
         for buffer_area in self.buffer_areas.values():
             execution_entries_tags = buffer_area.get_all_executable_entry_tags()
@@ -91,25 +98,26 @@ class Tomasulo:
                 if entry.locked:
                     continue
                 entry.execute()
-                log.info(f"Executing {entry.instruction}")
+                # entry.instruction.status = "EXECUTING"
+                # log.info(f"Executing {entry.instruction}")
 
     def write_back(self) -> None:
         if entry := self.executing_instructions_queue.get_next_writing_back_entry():
             entry.write_back()
-            log.info(f"Writing back {entry.instruction}")
+            # log.info(f"Writing back {entry.instruction}")
 
     def is_running(self) -> bool:
-        if self.debug:
-            time.sleep(0.5)
-            self._print_instructions_queue()
-            time.sleep(0.5)
-            self._print_reservation_areas()
-            time.sleep(0.5)
-            self._print_buffer_tables()
-            time.sleep(0.5)
-            self._print_memory()
-            time.sleep(0.5)
-            self._print_register_file()
+        # if self.debug:
+        # # time.sleep(0.5)
+        # self._print_instructions_queue()
+        # # time.sleep(0.5)
+        # self._print_reservation_areas()
+        # # time.sleep(0.5)
+        # self._print_buffer_tables()
+        # # time.sleep(0.5)
+        # self._print_memory()
+        # # time.sleep(0.5)
+        # self._print_register_file()
 
         return (
             not self.instructions_queue.is_empty()
@@ -175,7 +183,7 @@ class Tomasulo:
 
     def _print_buffer_tables(self):
         table = Table(title="Buffer Areas")
-        console = Console()
+        # console = Console()
 
         table.add_column("Buffer Area", style="yellow")
         table.add_column("Busy", style="green")
@@ -184,16 +192,24 @@ class Tomasulo:
         for buffer_area in self.buffer_areas.values():
             for entry in buffer_area.buffer_entries.values():
                 table.add_row(str(entry.tag), str(entry.busy), str(entry.v))
-        console.print(table)
+        # console.print(table)
 
     def unlock_all_entries(self) -> None:
         for reservation_area in self.reservation_areas.values():
             for entry in reservation_area.reservation_area.values():
-                entry.locked = False
-
+                self._update_status(entry)
         for buffer_area in self.buffer_areas.values():
             for entry in buffer_area.buffer_entries.values():
-                entry.locked = False
+                self._update_status(entry)
+
+    # TODO Rename this here and in `unlock_all_entries`
+    def _update_status(self, entry):
+        entry.locked = False
+        if entry.time == 0 and entry.state == EntryState.EXECUTING:
+            entry.set_state(EntryState.WRITING_BACK)
+            entry.instruction.status = "WRITING_BACK"
+        if entry.time == -5:
+            entry.instruction.status = "FINISHED"
 
     def tick(self) -> None:
         self.unlock_all_entries()

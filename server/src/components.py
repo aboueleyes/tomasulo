@@ -81,6 +81,7 @@ class RegisterFile(HasDependencies):
         return {
             register: {"Register": register, "value": value}
             for register, value in self.register_map.items()
+            if value != 0
         }
 
     def reset(self) -> None:
@@ -113,6 +114,7 @@ class Memory:
         return {
             str(index): {"address": address, "value": value}
             for index, (address, value) in enumerate(self.memory_map.items())
+            if value != 0
         }
 
     def reset(self) -> None:

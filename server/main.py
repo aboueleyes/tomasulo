@@ -15,7 +15,6 @@ logging.basicConfig(
 
 log = logging.getLogger("rich")
 
-# logger using rich
 console = Console()
 
 
@@ -36,11 +35,23 @@ def main():
 
     with console.status("[bold green]Running...") as status:
         while tomo.is_running():
+            log.info(f"Cycle: {current_cycle}")
+            # import ipdb; ipdb.set_trace()
             tomo.tick()
             current_cycle += 1
-            time.sleep(1.8)
+            # time.sleep(1.8)
             console.clear()
-            log.info(f"Cycle: {current_cycle}")
+            if tomo.debug:
+                # time.sleep(0.5)
+                tomo._print_instructions_queue()
+                # time.sleep(0.5)
+                tomo._print_reservation_areas()
+                # time.sleep(0.5)
+                tomo._print_buffer_tables()
+                # time.sleep(0.5)
+                tomo._print_memory()
+                # time.sleep(0.5)
+                tomo._print_register_file()
 
 
 if __name__ == "__main__":

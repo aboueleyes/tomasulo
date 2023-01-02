@@ -13,6 +13,9 @@ app = Flask(__name__)
 CORS(app)
 
 
+# disable json sort keys
+app.config["JSON_SORT_KEYS"] = False
+
 json_out = lambda current_cycle, queue: {
     "buffer": BufferAreas.get_instance().to_json(),
     "reservation": ReservationAreas.get_instance().to_json(),
@@ -57,7 +60,13 @@ def run():
 
     out.append(json_out(current_cycle, tomo.instructions_queue.to_json()))
     tomo.reset()
-    return json.dumps(out)
+    # write the output to a file
+    with open("../client/src/data.json", "w") as file:
+        json.dump(out, file, indent=4)
+
+    return {
+        "status": "success",
+    }
 
 
 app.run(

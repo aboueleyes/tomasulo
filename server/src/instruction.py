@@ -20,7 +20,7 @@ class TwoOperandInstruction(Instruction, ABC):
         self.second_operand = second_operand
 
     def __str__(self) -> str:
-        return f" {self.des} {self.first_operand} {self.second_operand}"
+        return f" {self.des} {self.first_operand} {self.second_operand} {self.status}"
 
     @abstractmethod
     def get_reservation_area(self) -> str:

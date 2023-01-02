@@ -33,6 +33,7 @@ const Simulation = () => {
 	const location = useLocation();
 	console.log(location.state);
 	const data = location.state;
+	console.log(data);
 	const [cycle, setCycle] = useState(0);
 
 	return (
