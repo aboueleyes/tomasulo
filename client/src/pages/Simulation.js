@@ -31,14 +31,18 @@ const MainContainer = styled.div`
 
 const Simulation = () => {
 	const location = useLocation();
-	console.log(location.state);
-	const data = location.state;
-	console.log(data);
 	const [cycle, setCycle] = useState(0);
+	const [data, setData] = useState([location.state]);
 
 	return (
 		<>
-			<Navbar lastCycle={data.length - 1} cycle={cycle} setCycle={setCycle} />
+			<Navbar
+				lastCycle={10}
+				cycle={cycle}
+				setCycle={setCycle}
+				data={data}
+				setData={setData}
+			/>
 			<HorizontalContainer>
 				<LeftSideContainer>
 					{/* <BasicTabs

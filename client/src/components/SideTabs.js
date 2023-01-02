@@ -163,7 +163,7 @@ const SideTabs = ({ registers, setRegisters, memory, setMemory, showEdit }) => {
 											setMemory({
 												...memory,
 												[`${memoryAddress}`]: {
-													Address: Number(memoryAddress),
+													address: Number(memoryAddress),
 													value: Number(memoryValue),
 												},
 											});

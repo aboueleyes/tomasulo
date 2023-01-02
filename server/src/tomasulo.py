@@ -26,6 +26,7 @@ class Tomasulo:
         self.buffer_areas = BufferAreas.get_instance().get_buffer_areas()
         self.executing_instructions_queue: ExecutingInstructionQueue = ExecutingInstructionQueue.get_instance()  # type: ignore
         self.debug = debug
+        self.current_cycle = 0
 
     def _map_instruction_to_reservation_area(
         self, instruction: Instruction
@@ -216,6 +217,7 @@ class Tomasulo:
         self.issue_instruction()
         self.execute()
         self.write_back()
+        self.current_cycle += 1
 
     def reset(self) -> None:
         self.executing_instructions_queue.reset()

@@ -40,7 +40,7 @@ def main():
             tomo.tick()
             current_cycle += 1
             # time.sleep(1.8)
-            console.clear()
+            # console.clear()
             if tomo.debug:
                 # time.sleep(0.5)
                 tomo._print_instructions_queue()
