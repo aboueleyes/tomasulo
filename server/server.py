@@ -113,6 +113,7 @@ def run():
     out.append(json_out(current_cycle, tomo.instructions_queue.to_json()))
     tomo.reset()
     # write the output to a file
+    out[-1]["instructions_queue"] = tomo.instructions_queue.to_final_json()
     return jsonify(out)
 
 

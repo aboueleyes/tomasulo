@@ -41,6 +41,21 @@ class InstructionsQueue:
             for index, instruction in enumerate(self.instructions)
         }
 
+    def to_final_json(self):
+        return {
+            index: {
+                "instruction": instruction.string_representation,
+                "status": instruction.status,
+                "issued_at_cycle": instruction.issued_at_cycle,
+                "executed_at_cycle": instruction.executed_at_cycle,
+                "finished_at_cycle": int(instruction.executed_at_cycle)
+                + int(instruction.latency)
+                - 1,
+                "written_at_cycle": instruction.written_at_cycle,
+            }
+            for index, instruction in enumerate(self.instructions)
+        }
+
 
 class RegisterFile(HasDependencies):
     __shared_instance = None
