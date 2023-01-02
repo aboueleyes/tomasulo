@@ -11,8 +11,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import * as Yup from 'yup';
 import validateFormData from '../utils/validateFormData';
 import axios from 'axios';
-
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import SideTabs from '../components/SideTabs';
 
 const HorizontalContainer = styled.div`
@@ -20,6 +19,7 @@ const HorizontalContainer = styled.div`
 	flex-direction: row;
 	height: 100vh;
 	width: 100vw;
+	// margin: 20px;
 `;
 
 const LeftSideContainer = styled.div`
@@ -608,8 +608,10 @@ const Setup = () => {
 					memory: memory,
 				};
 
+				console.log(requestData);
+
 				await axios
-					.post('http://127.0.0.1:5000/api/v1/init', requestData)
+					.post('http://127.0.0.1:5000/api/v1/run', requestData)
 					.then((response) => {
 						console.log(response.data);
 						navigate('/run', { state: response.data });

@@ -31,18 +31,13 @@ const MainContainer = styled.div`
 
 const Simulation = () => {
 	const location = useLocation();
+	console.log(location.state);
+	const data = location.state;
 	const [cycle, setCycle] = useState(0);
-	const [data, setData] = useState([location.state]);
 
 	return (
 		<>
-			<Navbar
-				lastCycle={10}
-				cycle={cycle}
-				setCycle={setCycle}
-				data={data}
-				setData={setData}
-			/>
+			<Navbar lastCycle={data.length - 1} cycle={cycle} setCycle={setCycle} />
 			<HorizontalContainer>
 				<LeftSideContainer>
 					{/* <BasicTabs
@@ -60,6 +55,10 @@ const Simulation = () => {
 
 				<MainContainer>
 					<Grid container spacing={2}>
+						<Grid item md={12} lg={12}>
+							<Typography variant='h6'>{'Instructions Queue'}</Typography>
+							<BasicTable content={data[cycle].instructions_queue} />
+						</Grid>
 						<Grid item md={6} lg={6}>
 							<Typography variant='h6'>
 								{'Addition Reservation Stations'}
