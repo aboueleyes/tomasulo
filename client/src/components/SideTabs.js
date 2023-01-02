@@ -13,7 +13,7 @@ const SideTabs = ({ registers, setRegisters, memory, setMemory, showEdit }) => {
 
 	const registerValidationRules = {
 		registerNumber: Yup.number().required().min(0).max(31),
-		registerValue: Yup.number().required().min(0),
+		registerValue: Yup.number().required(),
 	};
 
 	const [memoryAddress, setMemoryAddress] = useState(0);
@@ -23,7 +23,7 @@ const SideTabs = ({ registers, setRegisters, memory, setMemory, showEdit }) => {
 
 	const memoryValidationRules = {
 		memoryAddress: Yup.number().required().min(0).max(99),
-		memoryValue: Yup.number().required().min(0).max(99),
+		memoryValue: Yup.number().required(),
 	};
 
 	return (
@@ -163,7 +163,7 @@ const SideTabs = ({ registers, setRegisters, memory, setMemory, showEdit }) => {
 											setMemory({
 												...memory,
 												[`${memoryAddress}`]: {
-													Address: Number(memoryAddress),
+													address: Number(memoryAddress),
 													value: Number(memoryValue),
 												},
 											});
