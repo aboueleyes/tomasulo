@@ -19,7 +19,6 @@
    - The testing phase was includeded in the dev phase where you followed a behivoural driven develpomenet where we first write test scinarios and then write code to implement them 
    - Finally an end to end system testing was applied where insursing every component is integrating correctly and the whole logic is OK.
  
- 
 ## How to run 
 ### GUI 
 
@@ -106,4 +105,13 @@ A singalton Design Pattern were used to further simulate the hardware.
 ```
 
 ## Test Cases 
-TO BE ADDED
+
+```asm
+L.D F1 0
+L.D F2 1
+MUL.D F1 F2 F1
+MUL.D F1 F1 F1
+MUL.D F3 F1 F1
+```
+![image](https://user-images.githubusercontent.com/82768721/210284134-f4589a38-85e2-444d-a952-3ea166e6276b.png)
+
