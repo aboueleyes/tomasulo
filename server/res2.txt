@@ -1,0 +1,555 @@
+[17:21:31] INFO     Cycle: 1                                                                                                                          main.py:38
+            Instructions Queue             
+┏━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┓
+┃ Index ┃ Instruction            ┃ Status ┃
+┡━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━┩
+│ 0     │ MUL.D  F3 F1 F2 ISSUED │ ISSUED │
+│ 1     │ ADD.D  F5 F3 F4 None   │        │
+│ 2     │ ADD.D  F7 F2 F6 None   │        │
+│ 3     │ ADD.D  F10 F8 F9 None  │        │
+│ 4     │ MUL.D  F11 F7 F10 None │        │
+└───────┴────────────────────────┴────────┘
+                   Reservation Areas                    
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┳━━━━━━┳━━━━━━┳━━━━━━┳━━━━━━┓
+┃ Reservation Area ┃ Busy  ┃ Vj   ┃ Vk   ┃ Qj   ┃ Qk   ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━╇━━━━━━╇━━━━━━╇━━━━━━╇━━━━━━┩
+│ A1               │ False │ None │ None │ None │ None │
+│ A2               │ False │ None │ None │ None │ None │
+│ A3               │ False │ None │ None │ None │ None │
+│ M1               │ True  │ 0.0  │ 0.0  │ None │ None │
+│ M2               │ False │ None │ None │ None │ None │
+└──────────────────┴───────┴──────┴──────┴──────┴──────┘
+      Memory       
+┏━━━━━━━━━┳━━━━━━━┓
+┃ Address ┃ Value ┃
+┡━━━━━━━━━╇━━━━━━━┩
+│ 0       │ 1.0   │
+└─────────┴───────┘
+   Register File    
+┏━━━━━━━━━━┳━━━━━━━┓
+┃ Register ┃ Value ┃
+┡━━━━━━━━━━╇━━━━━━━┩
+│ F3       │ M1    │
+└──────────┴───────┘
+           INFO     Cycle: 2                                                                                                                          main.py:38
+               Instructions Queue                
+┏━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┓
+┃ Index ┃ Instruction               ┃ Status    ┃
+┡━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
+│ 0     │ MUL.D  F3 F1 F2 EXECUTING │ EXECUTING │
+│ 1     │ ADD.D  F5 F3 F4 ISSUED    │ ISSUED    │
+│ 2     │ ADD.D  F7 F2 F6 None      │           │
+│ 3     │ ADD.D  F10 F8 F9 None     │           │
+│ 4     │ MUL.D  F11 F7 F10 None    │           │
+└───────┴───────────────────────────┴───────────┘
+                   Reservation Areas                    
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┳━━━━━━┳━━━━━━┳━━━━━━┳━━━━━━┓
+┃ Reservation Area ┃ Busy  ┃ Vj   ┃ Vk   ┃ Qj   ┃ Qk   ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━╇━━━━━━╇━━━━━━╇━━━━━━╇━━━━━━┩
+│ A1               │ True  │ None │ 0.0  │ M1   │ None │
+│ A2               │ False │ None │ None │ None │ None │
+│ A3               │ False │ None │ None │ None │ None │
+│ M1               │ True  │ 0.0  │ 0.0  │ None │ None │
+│ M2               │ False │ None │ None │ None │ None │
+└──────────────────┴───────┴──────┴──────┴──────┴──────┘
+      Memory       
+┏━━━━━━━━━┳━━━━━━━┓
+┃ Address ┃ Value ┃
+┡━━━━━━━━━╇━━━━━━━┩
+│ 0       │ 1.0   │
+└─────────┴───────┘
+   Register File    
+┏━━━━━━━━━━┳━━━━━━━┓
+┃ Register ┃ Value ┃
+┡━━━━━━━━━━╇━━━━━━━┩
+│ F3       │ M1    │
+│ F5       │ A1    │
+└──────────┴───────┘
+           INFO     Cycle: 3                                                                                                                          main.py:38
+               Instructions Queue                
+┏━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┓
+┃ Index ┃ Instruction               ┃ Status    ┃
+┡━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
+│ 0     │ MUL.D  F3 F1 F2 EXECUTING │ EXECUTING │
+│ 1     │ ADD.D  F5 F3 F4 ISSUED    │ ISSUED    │
+│ 2     │ ADD.D  F7 F2 F6 ISSUED    │ ISSUED    │
+│ 3     │ ADD.D  F10 F8 F9 None     │           │
+│ 4     │ MUL.D  F11 F7 F10 None    │           │
+└───────┴───────────────────────────┴───────────┘
+                   Reservation Areas                    
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┳━━━━━━┳━━━━━━┳━━━━━━┳━━━━━━┓
+┃ Reservation Area ┃ Busy  ┃ Vj   ┃ Vk   ┃ Qj   ┃ Qk   ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━╇━━━━━━╇━━━━━━╇━━━━━━╇━━━━━━┩
+│ A1               │ True  │ None │ 0.0  │ M1   │ None │
+│ A2               │ True  │ 0.0  │ 0.0  │ None │ None │
+│ A3               │ False │ None │ None │ None │ None │
+│ M1               │ True  │ 0.0  │ 0.0  │ None │ None │
+│ M2               │ False │ None │ None │ None │ None │
+└──────────────────┴───────┴──────┴──────┴──────┴──────┘
+      Memory       
+┏━━━━━━━━━┳━━━━━━━┓
+┃ Address ┃ Value ┃
+┡━━━━━━━━━╇━━━━━━━┩
+│ 0       │ 1.0   │
+└─────────┴───────┘
+   Register File    
+┏━━━━━━━━━━┳━━━━━━━┓
+┃ Register ┃ Value ┃
+┡━━━━━━━━━━╇━━━━━━━┩
+│ F3       │ M1    │
+│ F5       │ A1    │
+│ F7       │ A2    │
+└──────────┴───────┘
+           INFO     Cycle: 4                                                                                                                          main.py:38
+               Instructions Queue                
+┏━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┓
+┃ Index ┃ Instruction               ┃ Status    ┃
+┡━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
+│ 0     │ MUL.D  F3 F1 F2 EXECUTING │ EXECUTING │
+│ 1     │ ADD.D  F5 F3 F4 ISSUED    │ ISSUED    │
+│ 2     │ ADD.D  F7 F2 F6 EXECUTING │ EXECUTING │
+│ 3     │ ADD.D  F10 F8 F9 ISSUED   │ ISSUED    │
+│ 4     │ MUL.D  F11 F7 F10 None    │           │
+└───────┴───────────────────────────┴───────────┘
+                   Reservation Areas                    
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┳━━━━━━┳━━━━━━┳━━━━━━┳━━━━━━┓
+┃ Reservation Area ┃ Busy  ┃ Vj   ┃ Vk   ┃ Qj   ┃ Qk   ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━╇━━━━━━╇━━━━━━╇━━━━━━╇━━━━━━┩
+│ A1               │ True  │ None │ 0.0  │ M1   │ None │
+│ A2               │ True  │ 0.0  │ 0.0  │ None │ None │
+│ A3               │ True  │ 0.0  │ 0.0  │ None │ None │
+│ M1               │ True  │ 0.0  │ 0.0  │ None │ None │
+│ M2               │ False │ None │ None │ None │ None │
+└──────────────────┴───────┴──────┴──────┴──────┴──────┘
+      Memory       
+┏━━━━━━━━━┳━━━━━━━┓
+┃ Address ┃ Value ┃
+┡━━━━━━━━━╇━━━━━━━┩
+│ 0       │ 1.0   │
+└─────────┴───────┘
+   Register File    
+┏━━━━━━━━━━┳━━━━━━━┓
+┃ Register ┃ Value ┃
+┡━━━━━━━━━━╇━━━━━━━┩
+│ F3       │ M1    │
+│ F5       │ A1    │
+│ F7       │ A2    │
+│ F10      │ A3    │
+└──────────┴───────┘
+           INFO     Cycle: 5                                                                                                                          main.py:38
+                Instructions Queue                
+┏━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┓
+┃ Index ┃ Instruction                ┃ Status    ┃
+┡━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
+│ 0     │ MUL.D  F3 F1 F2 EXECUTING  │ EXECUTING │
+│ 1     │ ADD.D  F5 F3 F4 ISSUED     │ ISSUED    │
+│ 2     │ ADD.D  F7 F2 F6 EXECUTING  │ EXECUTING │
+│ 3     │ ADD.D  F10 F8 F9 EXECUTING │ EXECUTING │
+│ 4     │ MUL.D  F11 F7 F10 ISSUED   │ ISSUED    │
+└───────┴────────────────────────────┴───────────┘
+                   Reservation Areas                   
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━┳━━━━━━┳━━━━━━┳━━━━━━┳━━━━━━┓
+┃ Reservation Area ┃ Busy ┃ Vj   ┃ Vk   ┃ Qj   ┃ Qk   ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━╇━━━━━━╇━━━━━━╇━━━━━━╇━━━━━━┩
+│ A1               │ True │ None │ 0.0  │ M1   │ None │
+│ A2               │ True │ 0.0  │ 0.0  │ None │ None │
+│ A3               │ True │ 0.0  │ 0.0  │ None │ None │
+│ M1               │ True │ 0.0  │ 0.0  │ None │ None │
+│ M2               │ True │ None │ None │ A2   │ A3   │
+└──────────────────┴──────┴──────┴──────┴──────┴──────┘
+      Memory       
+┏━━━━━━━━━┳━━━━━━━┓
+┃ Address ┃ Value ┃
+┡━━━━━━━━━╇━━━━━━━┩
+│ 0       │ 1.0   │
+└─────────┴───────┘
+   Register File    
+┏━━━━━━━━━━┳━━━━━━━┓
+┃ Register ┃ Value ┃
+┡━━━━━━━━━━╇━━━━━━━┩
+│ F3       │ M1    │
+│ F5       │ A1    │
+│ F7       │ A2    │
+│ F10      │ A3    │
+│ F11      │ M2    │
+└──────────┴───────┘
+           INFO     Cycle: 6                                                                                                                          main.py:38
+                Instructions Queue                
+┏━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┓
+┃ Index ┃ Instruction                ┃ Status    ┃
+┡━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
+│ 0     │ MUL.D  F3 F1 F2 EXECUTING  │ EXECUTING │
+│ 1     │ ADD.D  F5 F3 F4 ISSUED     │ ISSUED    │
+│ 2     │ ADD.D  F7 F2 F6 EXECUTING  │ EXECUTING │
+│ 3     │ ADD.D  F10 F8 F9 EXECUTING │ EXECUTING │
+│ 4     │ MUL.D  F11 F7 F10 ISSUED   │ ISSUED    │
+└───────┴────────────────────────────┴───────────┘
+                   Reservation Areas                   
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━┳━━━━━━┳━━━━━━┳━━━━━━┳━━━━━━┓
+┃ Reservation Area ┃ Busy ┃ Vj   ┃ Vk   ┃ Qj   ┃ Qk   ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━╇━━━━━━╇━━━━━━╇━━━━━━╇━━━━━━┩
+│ A1               │ True │ None │ 0.0  │ M1   │ None │
+│ A2               │ True │ 0.0  │ 0.0  │ None │ None │
+│ A3               │ True │ 0.0  │ 0.0  │ None │ None │
+│ M1               │ True │ 0.0  │ 0.0  │ None │ None │
+│ M2               │ True │ None │ None │ A2   │ A3   │
+└──────────────────┴──────┴──────┴──────┴──────┴──────┘
+      Memory       
+┏━━━━━━━━━┳━━━━━━━┓
+┃ Address ┃ Value ┃
+┡━━━━━━━━━╇━━━━━━━┩
+│ 0       │ 1.0   │
+└─────────┴───────┘
+   Register File    
+┏━━━━━━━━━━┳━━━━━━━┓
+┃ Register ┃ Value ┃
+┡━━━━━━━━━━╇━━━━━━━┩
+│ F3       │ M1    │
+│ F5       │ A1    │
+│ F7       │ A2    │
+│ F10      │ A3    │
+│ F11      │ M2    │
+└──────────┴───────┘
+           INFO     Cycle: 7                                                                                                                          main.py:38
+                Instructions Queue                
+┏━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┓
+┃ Index ┃ Instruction                ┃ Status    ┃
+┡━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
+│ 0     │ MUL.D  F3 F1 F2 EXECUTING  │ EXECUTING │
+│ 1     │ ADD.D  F5 F3 F4 ISSUED     │ ISSUED    │
+│ 2     │ ADD.D  F7 F2 F6 EXECUTING  │ EXECUTING │
+│ 3     │ ADD.D  F10 F8 F9 EXECUTING │ EXECUTING │
+│ 4     │ MUL.D  F11 F7 F10 ISSUED   │ ISSUED    │
+└───────┴────────────────────────────┴───────────┘
+                   Reservation Areas                   
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━┳━━━━━━┳━━━━━━┳━━━━━━┳━━━━━━┓
+┃ Reservation Area ┃ Busy ┃ Vj   ┃ Vk   ┃ Qj   ┃ Qk   ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━╇━━━━━━╇━━━━━━╇━━━━━━╇━━━━━━┩
+│ A1               │ True │ None │ 0.0  │ M1   │ None │
+│ A2               │ True │ 0.0  │ 0.0  │ None │ None │
+│ A3               │ True │ 0.0  │ 0.0  │ None │ None │
+│ M1               │ True │ 0.0  │ 0.0  │ None │ None │
+│ M2               │ True │ None │ None │ A2   │ A3   │
+└──────────────────┴──────┴──────┴──────┴──────┴──────┘
+      Memory       
+┏━━━━━━━━━┳━━━━━━━┓
+┃ Address ┃ Value ┃
+┡━━━━━━━━━╇━━━━━━━┩
+│ 0       │ 1.0   │
+└─────────┴───────┘
+   Register File    
+┏━━━━━━━━━━┳━━━━━━━┓
+┃ Register ┃ Value ┃
+┡━━━━━━━━━━╇━━━━━━━┩
+│ F3       │ M1    │
+│ F5       │ A1    │
+│ F7       │ A2    │
+│ F10      │ A3    │
+│ F11      │ M2    │
+└──────────┴───────┘
+           INFO     Cycle: 8                                                                                                                          main.py:38
+                  Instructions Queue                   
+┏━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┓
+┃ Index ┃ Instruction                  ┃ Status       ┃
+┡━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━┩
+│ 0     │ MUL.D  F3 F1 F2 WRITING_BACK │ WRITING_BACK │
+│ 1     │ ADD.D  F5 F3 F4 ISSUED       │ ISSUED       │
+│ 2     │ ADD.D  F7 F2 F6 WRITING_BACK │ WRITING_BACK │
+│ 3     │ ADD.D  F10 F8 F9 EXECUTING   │ EXECUTING    │
+│ 4     │ MUL.D  F11 F7 F10 ISSUED     │ ISSUED       │
+└───────┴──────────────────────────────┴──────────────┘
+                   Reservation Areas                    
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┳━━━━━━┳━━━━━━┳━━━━━━┳━━━━━━┓
+┃ Reservation Area ┃ Busy  ┃ Vj   ┃ Vk   ┃ Qj   ┃ Qk   ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━╇━━━━━━╇━━━━━━╇━━━━━━╇━━━━━━┩
+│ A1               │ True  │ None │ 0.0  │ M1   │ None │
+│ A2               │ False │ 0.0  │ 0.0  │ None │ None │
+│ A3               │ True  │ 0.0  │ 0.0  │ None │ None │
+│ M1               │ True  │ 0.0  │ 0.0  │ None │ None │
+│ M2               │ True  │ 0.0  │ None │ None │ A3   │
+└──────────────────┴───────┴──────┴──────┴──────┴──────┘
+      Memory       
+┏━━━━━━━━━┳━━━━━━━┓
+┃ Address ┃ Value ┃
+┡━━━━━━━━━╇━━━━━━━┩
+│ 0       │ 1.0   │
+└─────────┴───────┘
+   Register File    
+┏━━━━━━━━━━┳━━━━━━━┓
+┃ Register ┃ Value ┃
+┡━━━━━━━━━━╇━━━━━━━┩
+│ F3       │ M1    │
+│ F5       │ A1    │
+│ F10      │ A3    │
+│ F11      │ M2    │
+└──────────┴───────┘
+           INFO     Cycle: 9                                                                                                                          main.py:38
+                   Instructions Queue                   
+┏━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┓
+┃ Index ┃ Instruction                   ┃ Status       ┃
+┡━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━┩
+│ 0     │ MUL.D  F3 F1 F2 WRITING_BACK  │ WRITING_BACK │
+│ 1     │ ADD.D  F5 F3 F4 ISSUED        │ ISSUED       │
+│ 2     │ ADD.D  F7 F2 F6 FINISHED      │ FINISHED     │
+│ 3     │ ADD.D  F10 F8 F9 WRITING_BACK │ WRITING_BACK │
+│ 4     │ MUL.D  F11 F7 F10 ISSUED      │ ISSUED       │
+└───────┴───────────────────────────────┴──────────────┘
+                   Reservation Areas                   
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┳━━━━━━┳━━━━━┳━━━━━━┳━━━━━━┓
+┃ Reservation Area ┃ Busy  ┃ Vj   ┃ Vk  ┃ Qj   ┃ Qk   ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━╇━━━━━━╇━━━━━╇━━━━━━╇━━━━━━┩
+│ A1               │ True  │ None │ 0.0 │ M1   │ None │
+│ A2               │ False │ 0.0  │ 0.0 │ None │ None │
+│ A3               │ False │ 0.0  │ 0.0 │ None │ None │
+│ M1               │ True  │ 0.0  │ 0.0 │ None │ None │
+│ M2               │ True  │ 0.0  │ 0.0 │ None │ None │
+└──────────────────┴───────┴──────┴─────┴──────┴──────┘
+      Memory       
+┏━━━━━━━━━┳━━━━━━━┓
+┃ Address ┃ Value ┃
+┡━━━━━━━━━╇━━━━━━━┩
+│ 0       │ 1.0   │
+└─────────┴───────┘
+   Register File    
+┏━━━━━━━━━━┳━━━━━━━┓
+┃ Register ┃ Value ┃
+┡━━━━━━━━━━╇━━━━━━━┩
+│ F3       │ M1    │
+│ F5       │ A1    │
+│ F11      │ M2    │
+└──────────┴───────┘
+           INFO     Cycle: 10                                                                                                                         main.py:38
+                  Instructions Queue                   
+┏━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┓
+┃ Index ┃ Instruction                  ┃ Status       ┃
+┡━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━┩
+│ 0     │ MUL.D  F3 F1 F2 WRITING_BACK │ WRITING_BACK │
+│ 1     │ ADD.D  F5 F3 F4 ISSUED       │ ISSUED       │
+│ 2     │ ADD.D  F7 F2 F6 FINISHED     │ FINISHED     │
+│ 3     │ ADD.D  F10 F8 F9 FINISHED    │ FINISHED     │
+│ 4     │ MUL.D  F11 F7 F10 EXECUTING  │ EXECUTING    │
+└───────┴──────────────────────────────┴──────────────┘
+                  Reservation Areas                   
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┳━━━━━┳━━━━━┳━━━━━━┳━━━━━━┓
+┃ Reservation Area ┃ Busy  ┃ Vj  ┃ Vk  ┃ Qj   ┃ Qk   ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━╇━━━━━╇━━━━━╇━━━━━━╇━━━━━━┩
+│ A1               │ True  │ 0.0 │ 0.0 │ None │ None │
+│ A2               │ False │ 0.0 │ 0.0 │ None │ None │
+│ A3               │ False │ 0.0 │ 0.0 │ None │ None │
+│ M1               │ False │ 0.0 │ 0.0 │ None │ None │
+│ M2               │ True  │ 0.0 │ 0.0 │ None │ None │
+└──────────────────┴───────┴─────┴─────┴──────┴──────┘
+      Memory       
+┏━━━━━━━━━┳━━━━━━━┓
+┃ Address ┃ Value ┃
+┡━━━━━━━━━╇━━━━━━━┩
+│ 0       │ 1.0   │
+└─────────┴───────┘
+   Register File    
+┏━━━━━━━━━━┳━━━━━━━┓
+┃ Register ┃ Value ┃
+┡━━━━━━━━━━╇━━━━━━━┩
+│ F5       │ A1    │
+│ F11      │ M2    │
+└──────────┴───────┘
+           INFO     Cycle: 11                                                                                                                         main.py:38
+                Instructions Queue                 
+┏━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┓
+┃ Index ┃ Instruction                 ┃ Status    ┃
+┡━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
+│ 0     │ MUL.D  F3 F1 F2 FINISHED    │ FINISHED  │
+│ 1     │ ADD.D  F5 F3 F4 EXECUTING   │ EXECUTING │
+│ 2     │ ADD.D  F7 F2 F6 FINISHED    │ FINISHED  │
+│ 3     │ ADD.D  F10 F8 F9 FINISHED   │ FINISHED  │
+│ 4     │ MUL.D  F11 F7 F10 EXECUTING │ EXECUTING │
+└───────┴─────────────────────────────┴───────────┘
+                  Reservation Areas                   
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┳━━━━━┳━━━━━┳━━━━━━┳━━━━━━┓
+┃ Reservation Area ┃ Busy  ┃ Vj  ┃ Vk  ┃ Qj   ┃ Qk   ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━╇━━━━━╇━━━━━╇━━━━━━╇━━━━━━┩
+│ A1               │ True  │ 0.0 │ 0.0 │ None │ None │
+│ A2               │ False │ 0.0 │ 0.0 │ None │ None │
+│ A3               │ False │ 0.0 │ 0.0 │ None │ None │
+│ M1               │ False │ 0.0 │ 0.0 │ None │ None │
+│ M2               │ True  │ 0.0 │ 0.0 │ None │ None │
+└──────────────────┴───────┴─────┴─────┴──────┴──────┘
+      Memory       
+┏━━━━━━━━━┳━━━━━━━┓
+┃ Address ┃ Value ┃
+┡━━━━━━━━━╇━━━━━━━┩
+│ 0       │ 1.0   │
+└─────────┴───────┘
+   Register File    
+┏━━━━━━━━━━┳━━━━━━━┓
+┃ Register ┃ Value ┃
+┡━━━━━━━━━━╇━━━━━━━┩
+│ F5       │ A1    │
+│ F11      │ M2    │
+└──────────┴───────┘
+           INFO     Cycle: 12                                                                                                                         main.py:38
+                Instructions Queue                 
+┏━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┓
+┃ Index ┃ Instruction                 ┃ Status    ┃
+┡━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
+│ 0     │ MUL.D  F3 F1 F2 FINISHED    │ FINISHED  │
+│ 1     │ ADD.D  F5 F3 F4 EXECUTING   │ EXECUTING │
+│ 2     │ ADD.D  F7 F2 F6 FINISHED    │ FINISHED  │
+│ 3     │ ADD.D  F10 F8 F9 FINISHED   │ FINISHED  │
+│ 4     │ MUL.D  F11 F7 F10 EXECUTING │ EXECUTING │
+└───────┴─────────────────────────────┴───────────┘
+                  Reservation Areas                   
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┳━━━━━┳━━━━━┳━━━━━━┳━━━━━━┓
+┃ Reservation Area ┃ Busy  ┃ Vj  ┃ Vk  ┃ Qj   ┃ Qk   ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━╇━━━━━╇━━━━━╇━━━━━━╇━━━━━━┩
+│ A1               │ True  │ 0.0 │ 0.0 │ None │ None │
+│ A2               │ False │ 0.0 │ 0.0 │ None │ None │
+│ A3               │ False │ 0.0 │ 0.0 │ None │ None │
+│ M1               │ False │ 0.0 │ 0.0 │ None │ None │
+│ M2               │ True  │ 0.0 │ 0.0 │ None │ None │
+└──────────────────┴───────┴─────┴─────┴──────┴──────┘
+      Memory       
+┏━━━━━━━━━┳━━━━━━━┓
+┃ Address ┃ Value ┃
+┡━━━━━━━━━╇━━━━━━━┩
+│ 0       │ 1.0   │
+└─────────┴───────┘
+   Register File    
+┏━━━━━━━━━━┳━━━━━━━┓
+┃ Register ┃ Value ┃
+┡━━━━━━━━━━╇━━━━━━━┩
+│ F5       │ A1    │
+│ F11      │ M2    │
+└──────────┴───────┘
+           INFO     Cycle: 13                                                                                                                         main.py:38
+                Instructions Queue                 
+┏━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┓
+┃ Index ┃ Instruction                 ┃ Status    ┃
+┡━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
+│ 0     │ MUL.D  F3 F1 F2 FINISHED    │ FINISHED  │
+│ 1     │ ADD.D  F5 F3 F4 EXECUTING   │ EXECUTING │
+│ 2     │ ADD.D  F7 F2 F6 FINISHED    │ FINISHED  │
+│ 3     │ ADD.D  F10 F8 F9 FINISHED   │ FINISHED  │
+│ 4     │ MUL.D  F11 F7 F10 EXECUTING │ EXECUTING │
+└───────┴─────────────────────────────┴───────────┘
+                  Reservation Areas                   
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┳━━━━━┳━━━━━┳━━━━━━┳━━━━━━┓
+┃ Reservation Area ┃ Busy  ┃ Vj  ┃ Vk  ┃ Qj   ┃ Qk   ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━╇━━━━━╇━━━━━╇━━━━━━╇━━━━━━┩
+│ A1               │ True  │ 0.0 │ 0.0 │ None │ None │
+│ A2               │ False │ 0.0 │ 0.0 │ None │ None │
+│ A3               │ False │ 0.0 │ 0.0 │ None │ None │
+│ M1               │ False │ 0.0 │ 0.0 │ None │ None │
+│ M2               │ True  │ 0.0 │ 0.0 │ None │ None │
+└──────────────────┴───────┴─────┴─────┴──────┴──────┘
+      Memory       
+┏━━━━━━━━━┳━━━━━━━┓
+┃ Address ┃ Value ┃
+┡━━━━━━━━━╇━━━━━━━┩
+│ 0       │ 1.0   │
+└─────────┴───────┘
+   Register File    
+┏━━━━━━━━━━┳━━━━━━━┓
+┃ Register ┃ Value ┃
+┡━━━━━━━━━━╇━━━━━━━┩
+│ F5       │ A1    │
+│ F11      │ M2    │
+└──────────┴───────┘
+           INFO     Cycle: 14                                                                                                                         main.py:38
+                Instructions Queue                 
+┏━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┓
+┃ Index ┃ Instruction                 ┃ Status    ┃
+┡━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
+│ 0     │ MUL.D  F3 F1 F2 FINISHED    │ FINISHED  │
+│ 1     │ ADD.D  F5 F3 F4 EXECUTING   │ EXECUTING │
+│ 2     │ ADD.D  F7 F2 F6 FINISHED    │ FINISHED  │
+│ 3     │ ADD.D  F10 F8 F9 FINISHED   │ FINISHED  │
+│ 4     │ MUL.D  F11 F7 F10 EXECUTING │ EXECUTING │
+└───────┴─────────────────────────────┴───────────┘
+                  Reservation Areas                   
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┳━━━━━┳━━━━━┳━━━━━━┳━━━━━━┓
+┃ Reservation Area ┃ Busy  ┃ Vj  ┃ Vk  ┃ Qj   ┃ Qk   ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━╇━━━━━╇━━━━━╇━━━━━━╇━━━━━━┩
+│ A1               │ True  │ 0.0 │ 0.0 │ None │ None │
+│ A2               │ False │ 0.0 │ 0.0 │ None │ None │
+│ A3               │ False │ 0.0 │ 0.0 │ None │ None │
+│ M1               │ False │ 0.0 │ 0.0 │ None │ None │
+│ M2               │ True  │ 0.0 │ 0.0 │ None │ None │
+└──────────────────┴───────┴─────┴─────┴──────┴──────┘
+      Memory       
+┏━━━━━━━━━┳━━━━━━━┓
+┃ Address ┃ Value ┃
+┡━━━━━━━━━╇━━━━━━━┩
+│ 0       │ 1.0   │
+└─────────┴───────┘
+   Register File    
+┏━━━━━━━━━━┳━━━━━━━┓
+┃ Register ┃ Value ┃
+┡━━━━━━━━━━╇━━━━━━━┩
+│ F5       │ A1    │
+│ F11      │ M2    │
+└──────────┴───────┘
+           INFO     Cycle: 15                                                                                                                         main.py:38
+                  Instructions Queue                   
+┏━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┓
+┃ Index ┃ Instruction                  ┃ Status       ┃
+┡━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━┩
+│ 0     │ MUL.D  F3 F1 F2 FINISHED     │ FINISHED     │
+│ 1     │ ADD.D  F5 F3 F4 WRITING_BACK │ WRITING_BACK │
+│ 2     │ ADD.D  F7 F2 F6 FINISHED     │ FINISHED     │
+│ 3     │ ADD.D  F10 F8 F9 FINISHED    │ FINISHED     │
+│ 4     │ MUL.D  F11 F7 F10 EXECUTING  │ EXECUTING    │
+└───────┴──────────────────────────────┴──────────────┘
+                  Reservation Areas                   
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┳━━━━━┳━━━━━┳━━━━━━┳━━━━━━┓
+┃ Reservation Area ┃ Busy  ┃ Vj  ┃ Vk  ┃ Qj   ┃ Qk   ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━╇━━━━━╇━━━━━╇━━━━━━╇━━━━━━┩
+│ A1               │ False │ 0.0 │ 0.0 │ None │ None │
+│ A2               │ False │ 0.0 │ 0.0 │ None │ None │
+│ A3               │ False │ 0.0 │ 0.0 │ None │ None │
+│ M1               │ False │ 0.0 │ 0.0 │ None │ None │
+│ M2               │ True  │ 0.0 │ 0.0 │ None │ None │
+└──────────────────┴───────┴─────┴─────┴──────┴──────┘
+      Memory       
+┏━━━━━━━━━┳━━━━━━━┓
+┃ Address ┃ Value ┃
+┡━━━━━━━━━╇━━━━━━━┩
+│ 0       │ 1.0   │
+└─────────┴───────┘
+   Register File    
+┏━━━━━━━━━━┳━━━━━━━┓
+┃ Register ┃ Value ┃
+┡━━━━━━━━━━╇━━━━━━━┩
+│ F11      │ M2    │
+└──────────┴───────┘
+           INFO     Cycle: 16                                                                                                                         main.py:38
+                   Instructions Queue                    
+┏━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┓
+┃ Index ┃ Instruction                    ┃ Status       ┃
+┡━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━┩
+│ 0     │ MUL.D  F3 F1 F2 FINISHED       │ FINISHED     │
+│ 1     │ ADD.D  F5 F3 F4 FINISHED       │ FINISHED     │
+│ 2     │ ADD.D  F7 F2 F6 FINISHED       │ FINISHED     │
+│ 3     │ ADD.D  F10 F8 F9 FINISHED      │ FINISHED     │
+│ 4     │ MUL.D  F11 F7 F10 WRITING_BACK │ WRITING_BACK │
+└───────┴────────────────────────────────┴──────────────┘
+                  Reservation Areas                   
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┳━━━━━┳━━━━━┳━━━━━━┳━━━━━━┓
+┃ Reservation Area ┃ Busy  ┃ Vj  ┃ Vk  ┃ Qj   ┃ Qk   ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━╇━━━━━╇━━━━━╇━━━━━━╇━━━━━━┩
+│ A1               │ False │ 0.0 │ 0.0 │ None │ None │
+│ A2               │ False │ 0.0 │ 0.0 │ None │ None │
+│ A3               │ False │ 0.0 │ 0.0 │ None │ None │
+│ M1               │ False │ 0.0 │ 0.0 │ None │ None │
+│ M2               │ False │ 0.0 │ 0.0 │ None │ None │
+└──────────────────┴───────┴─────┴─────┴──────┴──────┘
+      Memory       
+┏━━━━━━━━━┳━━━━━━━┓
+┃ Address ┃ Value ┃
+┡━━━━━━━━━╇━━━━━━━┩
+│ 0       │ 1.0   │
+└─────────┴───────┘
+   Register File    
+┏━━━━━━━━━━┳━━━━━━━┓
+┃ Register ┃ Value ┃
+┡━━━━━━━━━━╇━━━━━━━┩
+└──────────┴───────┘

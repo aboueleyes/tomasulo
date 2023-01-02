@@ -30,9 +30,12 @@ class ReservationEntry:
         self.instruction: Optional[TwoOperandInstruction] = None
         self.locked: bool = False
 
-    def set_instruction(self, instruction: TwoOperandInstruction) -> None:
+    def set_instruction(
+        self, instruction: TwoOperandInstruction, current_cycle
+    ) -> None:
         self.instruction = instruction
         self.op = instruction.operation
+        self.state = EntryState.ISSUED
         if (
             type(self.register_file.get_register_value(instruction.first_operand))
             == float
@@ -40,8 +43,10 @@ class ReservationEntry:
             self.vj = float(
                 self.register_file.get_register_value(instruction.first_operand)
             )
+            self.qj = None
         else:
             self.qj = self.register_file.get_register_value(instruction.first_operand)
+            self.vj = None
         if (
             type(self.register_file.get_register_value(instruction.second_operand))
             == float
@@ -49,10 +54,14 @@ class ReservationEntry:
             self.vk = float(
                 self.register_file.get_register_value(instruction.second_operand)
             )
+            self.qk = None
+
         else:
             self.qk = self.register_file.get_register_value(instruction.second_operand)
+            self.vk = None
 
-        self.time = instruction.latency
+        self.time = int(instruction.latency)
+        self.instruction.issued_at_cycle = current_cycle
 
     def set_busy(self, busy: bool) -> None:
         self.busy = busy
@@ -78,11 +87,11 @@ class ReservationEntry:
 
     def adjust_state(self) -> None:
         if self.time == 0:
-            self.set_state(EntryState.WRITING_BACK)
-            self.instruction.status = "WRITING BACK"
+            # self.set_state(EntryState.WRITING_BACK)
+            # self.instruction.status = "WRITING BACK"
             self.locked = True
 
-    def execute(self) -> None:
+    def execute(self, current_cycle) -> None:
         if self.output is None:
             if (
                 self.vj is None
@@ -98,6 +107,7 @@ class ReservationEntry:
                 self.set_state(EntryState.EXECUTING)
                 self.locked = True
                 self.instruction.status = "EXECUTING"
+                self.instruction.executed_at_cycle = current_cycle
                 ExecutingInstructionQueue.get_instance().add_entry(self)  # type: ignore
                 self.decrease_time()
                 self.adjust_state()
@@ -106,7 +116,7 @@ class ReservationEntry:
                 self.decrease_time()
                 self.adjust_state()
 
-    def write_back(self) -> None:
+    def write_back(self, current_cycle) -> None:
         from .buffer import BufferAreas
 
         if self.output is None:
@@ -138,7 +148,8 @@ class ReservationEntry:
             ] = self.output  # type: ignore
 
         self.set_busy(False)
-        self.instruction.status = "FINISHED"
+        self.time = -5
+        self.instruction.written_at_cycle = current_cycle
 
     def to_json(self) -> dict[str, object]:
         return {
@@ -283,9 +294,9 @@ class ExecutingInstructionQueue:
         if not writing_back_entries:
             return None
         # print(f"Writing back {writing_back_entries[-1]}")
-        self.executing_instruction_queue.remove(writing_back_entries[-1])
+        self.executing_instruction_queue.remove(writing_back_entries[0])
         # print(f"Executing instruction queue {self.executing_instruction_queue}")
-        return writing_back_entries.pop()
+        return writing_back_entries[0]
 
     def reset(self) -> None:
         self.executing_instruction_queue = []

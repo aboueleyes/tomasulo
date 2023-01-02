@@ -8,6 +8,9 @@ class Instruction(ABC):
         self.latency = latency
         self.string_representation: Optional[str] = None
         self.status = None
+        self.issued_at_cycle = None
+        self.executed_at_cycle = None
+        self.written_at_cycle = None
 
 
 class TwoOperandInstruction(Instruction, ABC):

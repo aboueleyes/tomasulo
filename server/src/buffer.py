@@ -20,10 +20,13 @@ class BufferEntry:
         self.tag: str = tag
         self.register_file = RegisterFile.get_instance()  # type: ignore
 
-    def set_instruction(self, instruction: OneOperandInstruction) -> None:
+    def set_instruction(
+        self, instruction: OneOperandInstruction, current_cycle
+    ) -> None:
         self.instruction = instruction
         self.address = instruction.address
-        self.time = instruction.latency
+        self.time = int(instruction.latency)
+        self.instruction.issued_at_cycle = current_cycle
 
         if instruction.operation == "S.D":
             if type(self.register_file.get_register_value(instruction.des)) == float:
@@ -52,11 +55,11 @@ class BufferEntry:
 
     def adjust_state(self) -> None:
         if self.time == 0:
-            self.set_state(EntryState.WRITING_BACK)
-            self.instruction.status = "WRITING BACK"
+            # self.set_state(EntryState.WRITING_BACK)
+            # self.instruction.status = "WRITING BACK"
             self.locked = True
 
-    def execute(self) -> None:
+    def execute(self, current_cycle) -> None:
         if self.output is None:
             self.output = self.instruction.calculate()
 
@@ -64,6 +67,7 @@ class BufferEntry:
             case EntryState.ISSUED:
                 self.set_state(EntryState.EXECUTING)
                 self.locked = True
+                self.instruction.executed_at_cycle = current_cycle
                 ExecutingInstructionQueue.get_instance().add_entry(self)  # type: ignore
                 self.decrease_time()
                 self.adjust_state()
@@ -73,7 +77,7 @@ class BufferEntry:
                 self.decrease_time()
                 self.adjust_state()
 
-    def write_back(self) -> None:
+    def write_back(self, current_cycle) -> None:
         from .reservation import ReservationAreas
         from .components import RegisterFile, Memory
 
@@ -108,7 +112,8 @@ class BufferEntry:
             ] = self.output  # type: ignore
 
         self.set_busy(False)
-        self.instruction.status = "FINISHED"
+        self.time = -5
+        self.instruction.written_at_cycle = current_cycle
 
     def to_json(self) -> dict[str, object]:
         if self.tag[0] == "S":
