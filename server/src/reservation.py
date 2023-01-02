@@ -33,6 +33,7 @@ class ReservationEntry:
     def set_instruction(self, instruction: TwoOperandInstruction) -> None:
         self.instruction = instruction
         self.op = instruction.operation
+        self.state = EntryState.ISSUED
         if (
             type(self.register_file.get_register_value(instruction.first_operand))
             == float
@@ -40,8 +41,10 @@ class ReservationEntry:
             self.vj = float(
                 self.register_file.get_register_value(instruction.first_operand)
             )
+            self.qj = None
         else:
             self.qj = self.register_file.get_register_value(instruction.first_operand)
+            self.vj = None
         if (
             type(self.register_file.get_register_value(instruction.second_operand))
             == float
@@ -49,8 +52,11 @@ class ReservationEntry:
             self.vk = float(
                 self.register_file.get_register_value(instruction.second_operand)
             )
+            self.qk = None
+            
         else:
             self.qk = self.register_file.get_register_value(instruction.second_operand)
+            self.vk = None
 
         self.time = int(instruction.latency)
 
