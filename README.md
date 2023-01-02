@@ -156,5 +156,15 @@ ADD.D F6 F8 F2
 
 ![image](https://user-images.githubusercontent.com/82768721/210285633-10dc46ab-e5d8-43b2-a79e-a471681cbc65.png)
 
+```asm
+L.D F1 10
+MUL.D F1 F1 F1
+S.D F1 15
+SUB.D F1 F2 F2
+```
+
+![image](https://user-images.githubusercontent.com/82768721/210285834-2cfc48cf-230d-4482-8897-0998c571afca.png)
+
+
 
 
