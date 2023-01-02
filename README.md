@@ -131,4 +131,27 @@ MUL.D F1 F1 F1
 MUL.D F3 F1 F1
 ```
 
-![image](https://user-images.githubusercontent.com/82768721/210284134-f4589a38-85e2-444d-a952-3ea166e6276b.png)
+![image](https://user-images.githubusercontent.com/82768721/210285073-75c3343a-21c6-4a31-83a1-62e5a0e2a336.png)
+
+```asm
+L.D F1 0
+L.D F2 1
+MUL.D F2 F2 F2
+MUL.D F1 F2 F1
+MUL.D F1 F1 F1
+MUL.D F3 F1 F1
+ADD.D F3 F2 F2
+```
+
+![image](https://user-images.githubusercontent.com/82768721/210285270-f14060b8-358a-4f44-9639-8056bebb404c.png)
+
+```asm
+L.D F6 90
+L.D F2 80
+MUL.D F0 F2 F4
+SUB.D F8 F2 F6
+DIV.D F10 F0 F6
+ADD.D F6 F8 F2
+```
+
+
