@@ -283,9 +283,9 @@ class ExecutingInstructionQueue:
         if not writing_back_entries:
             return None
         # print(f"Writing back {writing_back_entries[-1]}")
-        self.executing_instruction_queue.remove(writing_back_entries[-1])
+        self.executing_instruction_queue.remove(writing_back_entries[0])
         # print(f"Executing instruction queue {self.executing_instruction_queue}")
-        return writing_back_entries.pop()
-
+        return writing_back_entries[0]
+    
     def reset(self) -> None:
         self.executing_instruction_queue = []
