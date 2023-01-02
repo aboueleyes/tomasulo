@@ -38,7 +38,7 @@ def main():
             # import ipdb; ipdb.set_trace()
             tomo.tick()
             # time.sleep(1.8)
-            # console.clear()
+            console.clear()
             if tomo.debug:
                 # time.sleep(0.5)
                 tomo._print_instructions_queue()
@@ -50,7 +50,7 @@ def main():
                 tomo._print_memory()
                 # time.sleep(0.5)
                 tomo._print_register_file()
-
+        tomo._print_final_queue()
 
 if __name__ == "__main__":
     main()

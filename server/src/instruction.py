@@ -8,6 +8,9 @@ class Instruction(ABC):
         self.latency = latency
         self.string_representation: Optional[str] = None
         self.status = None
+        self.issued_at_cycle = None
+        self.executed_at_cycle = None
+        self.written_at_cycle = None
 
 
 class TwoOperandInstruction(Instruction, ABC):
@@ -20,7 +23,7 @@ class TwoOperandInstruction(Instruction, ABC):
         self.second_operand = second_operand
 
     def __str__(self) -> str:
-        return f" {self.des} {self.first_operand} {self.second_operand} {self.status}"
+        return f" {self.des} {self.first_operand} {self.second_operand}"
 
     @abstractmethod
     def get_reservation_area(self) -> str:

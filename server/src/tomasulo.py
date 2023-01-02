@@ -26,7 +26,7 @@ class Tomasulo:
         self.buffer_areas = BufferAreas.get_instance().get_buffer_areas()
         self.executing_instructions_queue: ExecutingInstructionQueue = ExecutingInstructionQueue.get_instance()  # type: ignore
         self.debug = debug
-        self.current_cycle = 0
+        self.current_cycle = 1
 
     def _map_instruction_to_reservation_area(
         self, instruction: Instruction
@@ -53,7 +53,7 @@ class Tomasulo:
             next_instruction.status = "ISSUED"
 
             entry = buffer_area.get_next_free_entry()
-            entry.set_instruction(next_instruction)
+            entry.set_instruction(next_instruction, self.current_cycle)
             added_tag = buffer_area.add_entry(entry)
             if next_instruction.operation == "L.D":
                 self.register_file.set_register_value(next_instruction.des, added_tag)
@@ -72,7 +72,7 @@ class Tomasulo:
             next_instruction.status = "ISSUED"
             entry = reservation_area.get_next_free_entry()
             # type ignore is needed because mypy doesn't know that issubclass() is true
-            entry.set_instruction(next_instruction)  # type: ignore
+            entry.set_instruction(next_instruction, self.current_cycle)  # type: ignore
             added_tag = reservation_area.add_entry(entry)
             self.register_file.set_register_value(next_instruction.des, added_tag)
 
@@ -88,7 +88,7 @@ class Tomasulo:
                 # log.info(entry)
                 if entry.locked:
                     continue
-                entry.execute()
+                entry.execute(self.current_cycle)
                 # entry.instruction.status = "EXECUTING"
                 # log.info(f"Executing {entry.instruction}")
 
@@ -104,7 +104,7 @@ class Tomasulo:
 
     def write_back(self) -> None:
         if entry := self.executing_instructions_queue.get_next_writing_back_entry():
-            entry.write_back()
+            entry.write_back(self.current_cycle)
             # log.info(f"Writing back {entry.instruction}")
 
     def is_running(self) -> bool:
@@ -130,6 +130,26 @@ class Tomasulo:
                 not buffer_area.is_empty() for buffer_area in self.buffer_areas.values()
             )
         )
+
+    def _print_final_queue(self):
+        table = Table(title="Final Queue")
+        console = Console()
+        table.add_column("Index", style="cyan")
+        table.add_column("Instruction", style="green")
+        table.add_column("Issued At", style="green")
+        table.add_column("Executed At", style="green")
+        table.add_column("Written Back At", style="green")
+
+        for index, instruction in enumerate(self.instructions_queue.instructions):
+            table.add_row(
+                str(index),
+                str(instruction),
+                str(instruction.issued_at_cycle),
+                f"{instruction.executed_at_cycle:02} .. {instruction.executed_at_cycle + instruction.latency - 1:02}",
+                str(instruction.written_at_cycle),
+            )
+
+        console.print(table)
 
     def _print_instructions_queue(self):
         table = Table(title="Instructions Queue")
