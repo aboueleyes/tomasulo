@@ -29,16 +29,14 @@ def main():
     instructions_parser = InstructionParser(latencies=instruction_latencies)
     instructions_parser.read_file(file_name=args.file)
     instructions = instructions_parser.get_instructions()
-    Memory.get_instance().set_memory_value(0, 1.0)
+    # Memory.get_instance().set_memory_value(0, 1.0)
     tomo = Tomasulo(instructions=instructions, debug=True)
-    current_cycle = 1
 
     with console.status("[bold green]Running...") as status:
         while tomo.is_running():
-            log.info(f"Cycle: {current_cycle}")
+            log.info(f"Cycle: {tomo.current_cycle}")
             # import ipdb; ipdb.set_trace()
             tomo.tick()
-            current_cycle += 1
             # time.sleep(1.8)
             # console.clear()
             if tomo.debug:
