@@ -98,7 +98,7 @@ class Tomasulo:
                 entry = buffer_area.get_entry(tag)
                 if entry.locked:
                     continue
-                entry.execute()
+                entry.execute(self.current_cycle)
                 # entry.instruction.status = "EXECUTING"
                 # log.info(f"Executing {entry.instruction}")
 
@@ -145,7 +145,7 @@ class Tomasulo:
                 str(index),
                 str(instruction),
                 str(instruction.issued_at_cycle),
-                f"{instruction.executed_at_cycle:02} .. {instruction.executed_at_cycle + instruction.latency - 1:02}",
+                f"{instruction.executed_at_cycle:02} --> {instruction.executed_at_cycle + instruction.latency - 1:02}",
                 str(instruction.written_at_cycle),
             )
 

@@ -1,6 +1,6 @@
-ADD.D: 4
+ADD.D: 2
 SUB.D: 2
-MUL.D: 6
-DIV.D: 4
+MUL.D: 10
+DIV.D: 40
 L.D: 2
 S.D: 2
