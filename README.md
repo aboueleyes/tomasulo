@@ -1,28 +1,7 @@
 # Report
 
-## Steps
-
-1. Requiremnt Phase, reading the project requirements and discuss it with team mates.
-
-2. Design Phase
-
-- Deciding on Tech/Tools to use.
-- Desinging the archeticture of the software.
-
-3. Planning Phase
-
-- Studying the tomasulo algo
-- splitting the tasks to the team
-
-4.  Develpoment Phase
-
-- Implementing a client server archteitcutre Using React & Flask.
-- Implementing a fancy cli using logging techinques and cli argument parsing and configuration using yaml
-
-5.  Testing Phase
-
-- The testing phase was includeded in the dev phase where you followed a behivoural driven develpomenet where we first write test scinarios and then write code to implement them
-- Finally an end to end system testing was applied where insursing every component is integrating correctly and the whole logic is OK.
+## Note
+The projet was crammed due to deadlines, so a lot of swe princibles was voilated before the deadline :(, I'm sorry to inform you this :((((.
 
 ## Configurations
 
