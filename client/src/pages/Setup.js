@@ -50,7 +50,7 @@ const Setup = () => {
 		addLatency: Yup.number().required().min(1).max(10),
 		subLatency: Yup.number().required().min(1).max(10),
 		mulLatency: Yup.number().required().min(1).max(10),
-		divLatency: Yup.number().required().min(1).max(10),
+		divLatency: Yup.number().required().min(1).max(100),
 		loadLatency: Yup.number().required().min(1).max(10),
 		storeLatency: Yup.number().required().min(1).max(10),
 	};

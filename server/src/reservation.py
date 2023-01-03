@@ -36,6 +36,7 @@ class ReservationEntry:
         self.instruction = instruction
         self.op = instruction.operation
         self.state = EntryState.ISSUED
+        self.output = None
         if (
             type(self.register_file.get_register_value(instruction.first_operand))
             == float
@@ -142,6 +143,7 @@ class ReservationEntry:
             self.tag
         )  # type: ignore
 
+        print()
         for register in register_dependencies:
             RegisterFile.get_instance().register_map[
                 register

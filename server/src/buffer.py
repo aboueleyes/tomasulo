@@ -27,6 +27,7 @@ class BufferEntry:
         self.address = instruction.address
         self.time = int(instruction.latency)
         self.instruction.issued_at_cycle = current_cycle
+        self.output = None
 
         if instruction.operation == "S.D":
             if type(self.register_file.get_register_value(instruction.des)) == float:

@@ -131,6 +131,11 @@ MUL.D F1 F1 F1
 MUL.D F3 F1 F1
 ```
 
+| Type    | Latency |
+| :------ | :------ |
+| `L.D`   | `1`     |
+| `MUL.D` | `1`     |
+
 ![image](https://user-images.githubusercontent.com/82768721/210285073-75c3343a-21c6-4a31-83a1-62e5a0e2a336.png)
 
 ```asm
@@ -143,6 +148,12 @@ MUL.D F3 F1 F1
 ADD.D F3 F2 F2
 ```
 
+| Type    | Latency |
+| :------ | :------ |
+| `L.D`   | `1`     |
+| `MUL.D` | `2`     |
+| `ADD.D` | `1`     |
+
 ![image](https://user-images.githubusercontent.com/82768721/210285270-f14060b8-358a-4f44-9639-8056bebb404c.png)
 
 ```asm
@@ -154,4 +165,28 @@ DIV.D F10 F0 F6
 ADD.D F6 F8 F2
 ```
 
+| Type    | Latency |
+| :------ | :------ |
+| `L.D`   | `2`     |
+| `MUL.D` | `10`    |
+| `ADD.D` | `2`     |
+| `SUB.D` | `2`     |
+| `DIV.D` | `40`    |
 
+![image](https://user-images.githubusercontent.com/82768721/210285633-10dc46ab-e5d8-43b2-a79e-a471681cbc65.png)
+
+```asm
+L.D F1 10
+MUL.D F1 F1 F1
+S.D F1 15
+SUB.D F1 F2 F2
+```
+
+| Type    | Latency |
+| :------ | :------ |
+| `L.D`   | `1`     |
+| `MUL.D` | `4`     |
+| `SUB.D` | `2`     |
+| `S.D`   | `1`     |
+
+![image](https://user-images.githubusercontent.com/82768721/210285834-2cfc48cf-230d-4482-8897-0998c571afca.png)
