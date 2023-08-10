@@ -47,16 +47,16 @@ def main():
             console.clear()
             if tomo.debug:
                 # time.sleep(0.5)
-                tomo.print_instructions_queue()
+                tomo._print_instructions_queue()
                 # time.sleep(0.5)
-                tomo.print_reservation_areas()
+                tomo._print_reservation_areas()
                 # time.sleep(0.5)
-                tomo.print_buffer_tables()
+                tomo._print_buffer_tables()
                 # time.sleep(0.5)
-                tomo.print_memory()
+                tomo._print_memory()
                 # time.sleep(0.5)
-                tomo.print_register_file()
-        tomo.print_final_queue()
+                tomo._print_register_file()
+        tomo._print_final_queue()
 
 if __name__ == "__main__":
     main()
