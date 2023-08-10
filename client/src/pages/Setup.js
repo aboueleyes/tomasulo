@@ -11,7 +11,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import * as Yup from 'yup';
 import validateFormData from '../utils/validateFormData';
 import axios from 'axios';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import SideTabs from '../components/SideTabs';
 
 const HorizontalContainer = styled.div`
