@@ -32,6 +32,7 @@ jobs:
     - name: Install Node.js dependencies
       run: |
         npm ci
+        npm install eslint prettier
 
     - name: Run JavaScript linters
       run: |
