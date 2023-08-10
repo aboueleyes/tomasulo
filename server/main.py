@@ -1,8 +1,11 @@
-import time
 from src.instructions_parser import InstructionParser
 from src.tomasulo import Tomasulo
 from src.components import Memory
 import argparse
+import yaml
+from rich.console import Console
+import logging
+from rich.logging import RichHandler
 import yaml
 from rich.console import Console
 import logging
@@ -19,6 +22,9 @@ console = Console()
 
 
 def main():
+    """
+    Main function to run the Tomasulo algorithm.
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument("--file", type=str, default="./sample-instructions.txt")
     args = parser.parse_args()
@@ -41,16 +47,16 @@ def main():
             console.clear()
             if tomo.debug:
                 # time.sleep(0.5)
-                tomo._print_instructions_queue()
+                tomo.print_instructions_queue()
                 # time.sleep(0.5)
-                tomo._print_reservation_areas()
+                tomo.print_reservation_areas()
                 # time.sleep(0.5)
-                tomo._print_buffer_tables()
+                tomo.print_buffer_tables()
                 # time.sleep(0.5)
-                tomo._print_memory()
+                tomo.print_memory()
                 # time.sleep(0.5)
-                tomo._print_register_file()
-        tomo._print_final_queue()
+                tomo.print_register_file()
+        tomo.print_final_queue()
 
 if __name__ == "__main__":
     main()
