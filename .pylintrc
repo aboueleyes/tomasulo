@@ -231,4 +231,4 @@ method-name-hint=[a-z_][a-z0-9_]{2,30}$
 no-docstring-rgx=^_
 
 # Minimum line length for functions/classes that require docstrings, shorter ones are exempt.
-doc
+docstring-min-length=10
