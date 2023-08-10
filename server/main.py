@@ -1,11 +1,6 @@
 from src.instructions_parser import InstructionParser
 from src.tomasulo import Tomasulo
-from src.components import Memory
 import argparse
-import yaml
-from rich.console import Console
-import logging
-from rich.logging import RichHandler
 import yaml
 from rich.console import Console
 import logging
