@@ -45,6 +45,17 @@ You can learn more in the [Create React App documentation](https://facebook.gith
 
 To learn React, check out the [React documentation](https://reactjs.org/).
 
+## Code Linting
+
+This project uses ESLint and Prettier for JavaScript code linting and formatting. To run these linters, navigate to the project directory in your terminal and run the following commands:
+
+```bash
+npx eslint --fix .
+npx prettier --write .
+```
+
+These commands will automatically fix any issues that the linters can fix, and report any issues that need to be manually fixed.
+
 ### Code Splitting
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)

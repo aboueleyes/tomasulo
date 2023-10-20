@@ -1,7 +1,5 @@
-import time
 from src.instructions_parser import InstructionParser
 from src.tomasulo import Tomasulo
-from src.components import Memory
 import argparse
 import yaml
 from rich.console import Console
@@ -19,6 +17,9 @@ console = Console()
 
 
 def main():
+    """
+    Main function to run the Tomasulo algorithm.
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument("--file", type=str, default="./sample-instructions.txt")
     args = parser.parse_args()

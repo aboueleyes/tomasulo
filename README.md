@@ -100,6 +100,34 @@ A singalton Design Pattern were used to further simulate the hardware.
         └── tomasulo.py
 ```
 
+## Code Linting
+
+This project uses pylint and flake8 for Python code, and ESLint and Prettier for JavaScript code.
+
+To install these tools, you can use the following commands:
+
+```bash
+# Python
+pip install pylint flake8
+
+# JavaScript
+npm install --save-dev eslint prettier
+```
+
+To run these tools, you can use the following commands:
+
+```bash
+# Python
+pylint filename.py
+flake8 filename.py
+
+# JavaScript
+npx eslint filename.js
+npx prettier --write filename.js
+```
+
+The configuration files for these tools are .pylintrc, .flake8, .eslintrc.json, and .prettierrc.
+
 ## Test Cases
 
 ```asm

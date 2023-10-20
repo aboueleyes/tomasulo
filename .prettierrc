@@ -1,0 +1,7 @@
+{
+  "semi": suitable-semi-option,
+  "trailingComma": suitable-trailingComma-option,
+  "singleQuote": suitable-singleQuote-option,
+  "printWidth": suitable-printWidth,
+  "tabWidth": suitable-tabWidth
+}
